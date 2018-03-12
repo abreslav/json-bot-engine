@@ -1,0 +1,738 @@
+{
+  "__initialize": [
+    {
+      "user_input": ["привет", "hi", "hello", "start"],
+      "goto": "Обработчик Привет"
+    },
+    {
+      "user_input": ["test", "тест"],
+      "goto": "test"
+    },
+    {
+      "user_input": ["ввод", "привет"],
+      "goto": "Ввод"
+    },
+    {
+      "url_ref_tag": "test",
+      "goto": "tag"
+    },
+    {
+      "user_input": ["stage3"],
+      "goto": "Третий этап"
+    },
+    {
+      "user_input": ["/start"],
+      "goto": "__on_start"
+    },
+    {
+      "messenger": "facebook",
+      "greeting": [
+        {
+          "locale": "default",
+          "text": "Привет, {{user_first_name}} {{user_last_name}}!\nПолное имя: {{user_full_name}}\nПопробуем URL: http://ya.ru"
+        }
+      ]
+    }
+  ],
+  "__on_unrecognized": [
+    { "text": "Не понимаю" },
+    { "text": "Вы сказали: ${last_user_message}" },
+    {
+      "text": "Начнем заново?",
+      "quick_replies": [
+        {"title": "Да", "goto": "__on_start"}
+      ]
+    }
+  ],
+  "__on_start": [
+    { "text": "__on_start" },
+    { "text": "Напишите \"привет\", \"hi\", \"hello\", \"start\"" },
+    { "text": "Напишите \"Ввод\" или \"ввод!\"" },
+    { "text": "Напишите \"test\" или \"тест\"" },
+    { "text": "Напишите \"stage3\"" },
+    { "text": "Или перейдите по ссылке http://t.me/tg_new_bot?start=url_ref_tag-tag" },
+    {
+      "text": "Или потестируем кнопки и QR?",
+      "quick_replies": [
+        {"title": "Кнопки", "goto": "Кнопки и ввод"},
+        {"title": "Быстрые ответы", "goto": "QR и ввод"}
+      ]
+    }
+  ],
+
+  "Третий этап": [
+    {"text": "Третий этап"},
+    {"text": "Работа с переменными"},
+    {"goto": "Работа с переменными"},
+    {"text": "Условия"},
+    {"goto": "Условия"},
+    {
+      "text": "Email",
+      "buttons": [
+        {"title": "Отправить", "goto": "email"},
+        {"title": "Пропустить", "goto": "OK"}
+      ]
+    },
+    {
+      "text": "Log file",
+      "buttons": [
+        {"title": "Записать", "goto": "log"},
+        {"title": "Пропустить", "goto": "OK"}
+      ]
+    },
+    {
+      "text": "HTTP request",
+      "buttons": [
+        {"title": "Отправить", "goto": "http"},
+        {"title": "Пропустить", "goto": "OK"}
+      ]
+    }
+  ],
+  "Работа с переменными": [
+    {"assign": "${x}", "value": "X"},
+    {"text": "x = ${x}, ожидается: X"},
+    {"assign": "${y}", "value": "Y"},
+    {"text": "y = ${y}, ожидается: Y"},
+    {"assign": "${xy}", "value": "${x}*${y}"},
+    {"text": "xy = ${xy}, ожидается: X*Y"},
+    {"assign": "${x}", "value": "(${x})"},
+    {"text": "x = ${x}, ожидается: (X)"},
+    {"assign": "${x}", "value": null},
+    {"text": "x = ${x}, ожидается (null): "},
+    {"text": "Summary: x = ${x},\ny = ${y}\nxy = ${xy}"}
+  ],
+
+  "Условия": [
+    { "assign": "${test_name}", "value": "else"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "x", "operation": "not_equals", "right": "x" },
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "x == x"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "x", "operation": "equals", "right": "x" },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "x != y"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "x", "operation": "not_equals", "right": "y" },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "abc contains bc"},
+    { "assign": "${v_bc}", "value": "bc"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "a${v_bc}", "operation": "contains", "right": "${v_bc}" },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "bc !contains abc"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "bc", "operation": "not_contains", "right": "abc" },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${v}", "value": "not_null"},
+    { "assign": "${test_name}", "value": "v != null"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "${v}", "operation": "not_set"},
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+    { "assign": "${v}", "value": null},
+    { "assign": "${test_name}", "value": "v == null"},
+    {
+      "conditional": [
+        {
+          "condition": { "left": "${v}", "operation": "not_set"},
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${v}", "value": "not_null"},
+    { "assign": "${test_name}", "value": "!(v == null)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "${v}", "operation": "not_set"},
+            "operation": "not"
+          },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a == a) && (b == b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "equals", "right": "a" },
+            "operation": "and",
+            "right": { "left": "b", "operation": "equals", "right": "b" }
+          },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a == a) && (b != b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "equals", "right": "a" },
+            "operation": "and",
+            "right": { "left": "b", "operation": "not_equals", "right": "b" }
+          },
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a != a) && (b == b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "not_ equals", "right": "a" },
+            "operation": "and",
+            "right": { "left": "b", "operation": "equals", "right": "b" }
+          },
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a != a) && (b != b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "not_ equals", "right": "a" },
+            "operation": "and",
+            "right": { "left": "b", "operation": "not_equals", "right": "b" }
+          },
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+
+    { "assign": "${test_name}", "value": "(a == a) || (b == b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "equals", "right": "a" },
+            "operation": "or",
+            "right": { "left": "b", "operation": "equals", "right": "b" }
+          },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a == a) || (b != b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "equals", "right": "a" },
+            "operation": "or",
+            "right": { "left": "b", "operation": "not_equals", "right": "b" }
+          },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a != a) || (b == b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "not_ equals", "right": "a" },
+            "operation": "or",
+            "right": { "left": "b", "operation": "equals", "right": "b" }
+          },
+          "do": [ { "goto": "OK" } ]
+        },
+        { "else": [ {"goto": "Fail" } ] }
+      ]
+    },
+
+    { "assign": "${test_name}", "value": "(a != a) || (b != b)"},
+    {
+      "conditional": [
+        {
+          "condition": {
+            "left": { "left": "a", "operation": "not_ equals", "right": "a" },
+            "operation": "or",
+            "right": { "left": "b", "operation": "not_equals", "right": "b" }
+          },
+          "do": [ { "goto": "Fail" } ]
+        },
+        { "else": [ {"goto": "OK" } ] }
+      ]
+    },
+
+    { "text": "Done" }
+  ],
+  "OK": [ {"text": "OK: ${test_name}"} ],
+  "Fail": [ {"text": "Fail: ${test_name}"} ],
+
+  "email": [
+    { "assign": "${var}", "value": "for email"},
+    {
+      "email_to": ["abreslav+test@gmail.com"],
+      "subject": "Test subject ${var}",
+      "body": "Some more text, ${var}\nMore text"
+    }
+  ],
+  "log": [
+    { "assign": "${var}", "value": "for log"},
+    {
+      "log_file": "foo.log",
+      "text": "Some text, \"${var}\"\nMore text"
+    }
+  ],
+  "http": [
+    { "assign": "${var}", "value": "for http"},
+    {
+      "url": "https://httpbin.org/post?foo=bar",
+      "method": "POST",
+      "headers": [
+        "Accept-language: en",
+        "Cookie: foo=bar",
+        "My-Header: My value: ${var}"
+      ],
+      "content": "Some text, ${var}\nMore text",
+      "response_handler": "handler_block",
+      "mode": "synchronous"
+    }
+  ],
+  "handler_block": [
+    { "text": "status: ${http_status}\nerror: ${http_error}\nresponse: ${http_response}" }
+  ],
+
+
+
+  "Обработчик Привет": [
+    { "text": "Привет!" },
+    { "text": "Вы написали: ${last_user_message}" },
+    {
+      "text": "Что будем тестировать?",
+      "quick_replies": [
+        {"title": "Предопределенные переменные, текст, картинки", "goto": "Предопределенные переменные, текст, картинки"},
+        {"title": "Переходы", "goto": "Переходы"},
+        {"title": "Кнопки", "goto": "Кнопки"},
+        {"title": "Галерея", "goto": "Галерея"}
+      ]
+    }
+  ],
+  "Ввод": [
+    { "text": "Вы написали: ${last_user_message}" },
+    { "text": "Напишите что-нибудь:" },
+    { "input": "${ваше сообщение}"},
+    { "text": "Спасибо. Вы написали: ${ваше сообщение}, last_user_message = ${last_user_message}" }
+  ],
+
+  "Кнопки и ввод": [
+    {
+      "text": "Выберите что-нибудь",
+      "buttons": [
+        {"title": "Введите 1, Z, z", "goto": "Z", "user_input": ["1", "z"]},
+        {"title": "Введите 2, Б, б", "goto": "Б", "user_input": ["1", "б"]},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+
+  "QR и ввод": [
+    {
+      "text": "Выберите что-нибудь",
+      "quick_replies": [
+        {"title": "Введите 1, Z, z", "goto": "Zqr", "user_input": ["1", "z"]},
+        {"title": "Введите 2, Б, б", "goto": "Бqr", "user_input": ["1", "б"]},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+
+  "Z": [
+    {
+      "text": "Z, вы ввели: ${last_user_message}",
+      "buttons": [
+        {"title": "Назад", "goto": "Кнопки и ввод"}
+      ]
+    }
+  ],
+
+  "Б": [
+    {
+      "text": "Б, вы ввели: ${last_user_message}",
+      "buttons": [
+        {
+          "title": "Назад",
+          "goto": "Кнопки и ввод"
+        }
+      ]
+    }
+  ],
+
+  "Zqr": [
+    {
+      "text": "Z, вы ввели: ${last_user_message}",
+      "buttons": [
+        {"title": "Назад", "goto": "QR и ввод"}
+      ]
+    }
+  ],
+
+  "Бqr": [
+    {
+      "text": "Б, вы ввели: ${last_user_message}",
+      "buttons": [
+        {
+          "title": "Назад",
+          "goto": "QR и ввод"
+        }
+      ]
+    }
+  ],
+
+  "tag": [
+    { "text": "Вы перешли по тегу: ${url_ref_tag}" },
+    { "goto": "__on_start"}
+  ],
+
+  "test": [
+    {
+      "text": "1. Вопрос?",
+      "quick_replies": [
+        {"title": "Ответ 1.1", "goto": "1.1"},
+        {"title": "Ответ 1.2", "goto": "1.2"}
+      ]
+    },
+    {
+      "text": "2. Вопрос?",
+      "quick_replies": [
+        {"title": "Ответ 2.1", "goto": "2.1"},
+        {"title": "Ответ 2.2", "goto": "2.2"}
+      ]
+    },
+    { "text": "Тест окончен!"}
+  ],
+
+  "1.1": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "1.2": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "2.1": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "2.2": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+
+  "Предопределенные переменные, текст, картинки": [
+    { "goto": "Предопределенные переменные" },
+    { "goto": "Текст" },
+    { "goto": "Картинки" },
+    { "goto": "__on_start"}
+  ],
+  "Предопределенные переменные": [
+    { "text": "Тестируем предопределенные переменные:" },
+    { "text": "user_first_name = ${user_first_name}" },
+    { "text": "user_last_name = ${user_last_name}" },
+    { "text": "user_messenger_id = ${user_messenger_id}" },
+    { "text": "last_button = ${last_button}" },
+    { "text": "last_block = ${last_block}" },
+    { "text": "current_block = ${current_block}" },
+    { "text": "last_user_message = ${last_user_message}" },
+    { "text": "locale = ${locale}" },
+    { "text": "user_pic_url = ${user_pic_url}" },
+    { "text": "url_ref_tag = ${url_ref_tag}" },
+    { "text": "timezone = ${timezone}" },
+    { "text": "timestamp = ${timestamp}" }
+  ],
+  "Текст": [
+    { "text": "Тестируем текст!\n\nБольше текста!\nДлинный фрагмент текста, проверим на всякий случай, мало ли что там такое может случиться" },
+    { "text": "Надо подумать 2 секунды!" },
+    { "typing": 2000 },
+    { "text": "Все!" }
+  ],
+  "Картинки": [
+    { "text": "Тестируем картинки:" },
+    { "image_url": "https://static.tildacdn.com/tild3638-6634-4866-b139-303866653332/IsometricPaper04_sut.png" }
+  ],
+
+  "Переходы": [
+    { "text": "Тестируем переходы" },
+    { "text": "Должно быть: 1, 2, 3, 4, 5" },
+    { "text": "1" },
+    { "goto": "2"},
+    { "text": "5" },
+    { "text": "Теперь случайный переход:" },
+    { "goto": "Случайный переход"},
+    { "text": "Теперь no_return:" },
+    { "goto": "no_return"},
+    { "goto": "__on_start"}
+  ],
+  "2": [
+    { "text": "2" },
+    { "goto": "3"},
+    { "text": "4"}
+  ],
+  "3": [
+    { "text": "3"}
+  ],
+  "Случайный переход": [
+    { "text": "Прыгаем случайно" },
+    { "goto_random": ["Блок Контакты", "Блок Контакты 2"]}
+  ],
+  "no_return": [
+    { "text": "Должно быть: 1, 2, 3" },
+    { "text": "1" },
+    { "goto": "2nr", "no_return": true },
+    { "text": "5" }
+  ],
+  "2nr": [
+    { "text": "2" },
+    { "goto": "3", "no_return": true},
+    { "text": "4"}
+  ],
+  "3nr": [
+    { "text": "3" }
+  ],
+
+  "Кнопки": [
+    {
+      "text": "Кнопки",
+      "buttons": [
+        {"title": "Goto \"Quick Replies\"", "goto": "Quick Replies"},
+        {"title": "Web URL", "web_url": "http://ya.ru"},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+  "Quick Replies": [
+    {
+      "text": "Quick Replies",
+      "quick_replies": [
+        {"title": "Goto \"Кнопки\"", "goto": "Кнопки"},
+        {"title": "Web URL", "web_url": "http://ya.ru"},
+        {"title": "С картинкой", "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Kinda_Funny_smile_icon.jpeg", "goto": "Кнопки"},
+        {"title": "Назад", "goto": "Кнопки"}
+      ]
+    }
+  ],
+
+
+  "Галерея": [
+    {
+      "text": "Галереи:",
+      "quick_replies": [
+        {"title": "Квадраты", "goto": "Square Gallery"},
+        {"title": "Прямоугольники", "goto": "Horizontal Gallery"},
+        {"title": "random_selection", "goto": "Галерея с random_selection"},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+  "Square Gallery": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/kuRWn6/image.png",
+          "title": "Москва, м. Войковская",
+          "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Контакты", "goto": "Блок Контакты" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+          "title": "Москва, м. Третьяковская",
+          "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+          "buttons": [
+            { "title": "ya.ru", "web_url": "http://ya.ru" },
+            { "title": "Контакты", "goto": "Блок Контакты 2" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "square"
+    }
+  ],
+  "Horizontal Gallery": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/kuRWn6/image.png",
+          "title": "Москва, м. Войковская",
+          "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Контакты", "goto": "Блок Контакты" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+          "title": "Москва, м. Третьяковская",
+          "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+          "buttons": [
+            { "title": "ya.ru", "web_url": "http://ya.ru" },
+            { "title": "Контакты", "goto": "Блок Контакты 2" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "horizontal"
+    }
+  ],
+  "Галерея с random_selection": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "random_selection": 3,
+          "from": [
+            {
+              "image_url": "https://image.ibb.co/kuRWn6/image.png",
+              "title": "A) Москва, м. Войковская",
+              "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+              "buttons": [
+                { "title": "Google", "web_url": "http://google.com" },
+                { "title": "Контакты", "goto": "Блок Контакты" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+              "title": "B) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/bWpO0R/image.png",
+              "title": "C) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/dRiu76/image.png",
+              "title": "D) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Вот и все!",
+          "subtitle": "Конец",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "square"
+    }
+  ],
+  "Блок Контакты": [
+    {
+      "text": "Контакты",
+      "buttons": [
+        { "title": "Назад", "goto": "__on_start" }
+      ]
+    }
+  ],
+  "Блок Контакты 2": [
+    {
+      "text": "Контакты 2",
+      "buttons": [
+        { "title": "Назад", "goto": "__on_start" }
+      ]
+    }
+  ]
+}

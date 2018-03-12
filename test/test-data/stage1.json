@@ -1,0 +1,308 @@
+{
+  "__initialize": [
+    {
+      "user_input": ["/start"],
+      "goto": "__on_start"
+    }
+  ],
+  "__on_start": [
+    { "text": "__on_start" },
+    {
+      "text": "Что будем тестировать?",
+      "quick_replies": [
+        {"title": "Предопределенные переменные, текст, картинки", "goto": "Предопределенные переменные, текст, картинки"},
+        {"title": "Переходы", "goto": "Переходы"},
+        {"title": "Кнопки", "goto": "Кнопки"},
+        {"title": "Галерея", "goto": "Галерея"}
+      ]
+    }
+  ],
+  "Предопределенные переменные, текст, картинки": [
+    { "goto": "Предопределенные переменные" },
+    { "goto": "Текст" },
+    { "goto": "Картинки" },
+    { "goto": "__on_start"}
+  ],
+  "Предопределенные переменные": [
+    { "text": "Тестируем предопределенные переменные:" },
+    { "text": "user_first_name = ${user_first_name}" },
+    { "text": "user_last_name = ${user_last_name}" },
+    { "text": "user_messenger_id = ${user_messenger_id}" },
+    { "text": "last_button = ${last_button}" },
+    { "text": "last_block = ${last_block}" },
+    { "text": "current_block = ${current_block}" },
+    { "text": "last_user_message = ${last_user_message}" },
+    { "text": "locale = ${locale}" },
+    { "text": "user_pic_url = ${user_pic_url}" },
+    { "text": "url_ref_tag = ${url_ref_tag}" },
+    { "text": "timezone = ${timezone}" },
+    { "text": "timestamp = ${timestamp}" }
+  ],
+  "Текст": [
+    { "text": "Тестируем текст!\n\nБольше текста!\nДлинный фрагмент текста, проверим на всякий случай, мало ли что там такое может случиться" },
+    { "text": "Надо подумать 2 секунды!" },
+    { "typing": 2000 },
+    { "text": "Все!" }
+  ],
+  "Картинки": [
+    { "text": "Тестируем картинки:" },
+    { "image_url": "https://static.tildacdn.com/tild3638-6634-4866-b139-303866653332/IsometricPaper04_sut.png" }
+  ],
+
+  "Переходы": [
+    { "text": "Тестируем переходы" },
+    { "text": "Должно быть: 1, 2, 3, 4, 5" },
+    { "text": "1" },
+    { "goto": "2"},
+    { "text": "5" },
+    { "text": "Теперь случайный переход:" },
+    { "goto": "Случайный переход"},
+    { "text": "Теперь no_return:" },
+    { "goto": "no_return"},
+    { "goto": "test" },
+    { "goto": "__on_start"}
+  ],
+  "2": [
+    { "text": "2" },
+    { "goto": "3"},
+    { "text": "4"}
+  ],
+  "3": [
+    { "text": "3"}
+  ],
+  "Случайный переход": [
+    { "text": "Прыгаем случайно" },
+    { "goto_random": ["Блок Контакты", "Блок Контакты 2"]}
+  ],
+  "no_return": [
+    { "text": "Должно быть: 1, 2, 3" },
+    { "text": "1" },
+    { "goto": "2nr", "no_return": true },
+    { "text": "5" }
+  ],
+  "2nr": [
+    { "text": "2" },
+    { "goto": "3", "no_return": true},
+    { "text": "4"}
+  ],
+  "3nr": [
+    { "text": "3" }
+  ],
+
+  "Кнопки": [
+    {
+      "text": "Кнопки",
+      "buttons": [
+        {"title": "Goto \"Quick Replies\"", "goto": "Quick Replies"},
+        {"title": "Web URL", "web_url": "http://ya.ru"},
+        {"title": "С картинкой", "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Kinda_Funny_smile_icon.jpeg", "goto": "Кнопки"},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+  "Quick Replies": [
+    {
+      "text": "Quick Replies",
+      "quick_replies": [
+        {"title": "Goto \"Кнопки\"", "goto": "Кнопки"},
+        {"title": "Web URL", "web_url": "http://ya.ru"},
+        {"title": "С картинкой", "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Kinda_Funny_smile_icon.jpeg", "goto": "Кнопки"},
+        {"title": "Назад", "goto": "Кнопки"}
+      ]
+    }
+  ],
+
+
+  "Галерея": [
+    {
+      "text": "Галереи:",
+      "quick_replies": [
+        {"title": "Квадраты", "goto": "Square Gallery"},
+        {"title": "Прямоугольники", "goto": "Horizontal Gallery"},
+        {"title": "random_selection", "goto": "Галерея с random_selection"},
+        {"title": "Назад", "goto": "__on_start"}
+      ]
+    }
+  ],
+  "Square Gallery": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/kuRWn6/image.png",
+          "title": "Москва, м. Войковская",
+          "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Контакты", "goto": "Блок Контакты" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+          "title": "Москва, м. Третьяковская",
+          "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+          "buttons": [
+            { "title": "ya.ru", "web_url": "http://ya.ru" },
+            { "title": "Контакты", "goto": "Блок Контакты 2" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "square"
+    }
+  ],
+  "Horizontal Gallery": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/kuRWn6/image.png",
+          "title": "Москва, м. Войковская",
+          "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Контакты", "goto": "Блок Контакты" }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+          "title": "Москва, м. Третьяковская",
+          "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+          "buttons": [
+            { "title": "ya.ru", "web_url": "http://ya.ru" },
+            { "title": "Контакты", "goto": "Блок Контакты 2" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "horizontal"
+    }
+  ],
+  "Галерея с random_selection": [
+    {
+      "gallery": [
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Мы подобрали для вас 2х специалистов",
+          "subtitle": "Очень старались, между прочим!",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        },
+        {
+          "random_selection": 3,
+          "from": [
+            {
+              "image_url": "https://image.ibb.co/kuRWn6/image.png",
+              "title": "A) Москва, м. Войковская",
+              "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+              "buttons": [
+                { "title": "Google", "web_url": "http://google.com" },
+                { "title": "Контакты", "goto": "Блок Контакты" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+              "title": "B) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/bWpO0R/image.png",
+              "title": "C) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/dRiu76/image.png",
+              "title": "D) Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            }
+          ]
+        },
+        {
+          "image_url": "https://image.ibb.co/iskP76/0.png",
+          "title": "Вот и все!",
+          "subtitle": "Конец",
+          "buttons": [
+            { "title": "Google", "web_url": "http://google.com" },
+            { "title": "Назад", "goto": "__on_start" }
+          ]
+        }
+      ],
+      "image_aspect_ratio": "square"
+    }
+  ],
+  "Блок Контакты": [
+    {
+      "text": "Контакты",
+      "buttons": [
+        { "title": "Назад", "goto": "__on_start" }
+      ]
+    }
+  ],
+  "Блок Контакты 2": [
+    {
+      "text": "Контакты 2",
+      "buttons": [
+        { "title": "Назад", "goto": "__on_start" }
+      ]
+    }
+  ],
+  "test": [
+    { "text": "Пройдите тест"},
+    {
+      "text": "1. Вопрос?",
+      "quick_replies": [
+        {"title": "Ответ 1.1", "goto": "1.1"},
+        {"title": "Ответ 1.2", "goto": "1.2"}
+      ]
+    },
+    {
+      "text": "2. Вопрос?",
+      "quick_replies": [
+        {"title": "Ответ 2.1", "goto": "2.1"},
+        {"title": "Ответ 2.2", "goto": "2.2"}
+      ]
+    },
+    { "text": "Тест окончен!"}
+  ],
+
+  "1.1": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "1.2": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "2.1": [
+    { "text": "Ответ: ${current_block}"}
+  ],
+  "2.2": [
+    { "text": "Ответ: ${current_block}"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "Начать заново": {
+    "object": "page",
+    "entry": [
+      {
+        "id": "512395735799244",
+        "time": 1514882509376,
+        "messaging": [
+          {
+            "recipient": {
+              "id": "512395735799244"
+            },
+            "timestamp": 1514882509376,
+            "sender": {
+              "id": "1561424880573361"
+            },
+            "postback": {
+              "payload": "{\"message_type\":\"service\",\"goto\":\"startTest\"}",
+              "title": "Начать заново"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

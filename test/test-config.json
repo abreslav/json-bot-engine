@@ -1,0 +1,53 @@
+{
+  "http": {
+    "base_url": "http://localhost",
+    "port": 5000,
+    "public_html_dir": "public"
+  },
+  "bot": {
+    "file": "/test/test-data/test-bot.json"
+  },
+  "mongodb": {
+    "url": "mongodb://test:test@localhost:27017/test",
+    "db": "test"
+  },
+  "facebook": {
+    "webhook_path": "/webhook/",
+    "webhook_verification_token": "test",
+    "page_access_token": "test",
+    "policy_enforcement_email": "test@test.com",
+    "log_echos": false,
+    "admins": [
+      { "psid": "1", "name": "Admin Admin" }
+    ],
+    "page_id": "12345"
+  },
+  "logging": {
+    "log_http_requests": true
+  },
+  "mailer": {
+    "from_name": "Test Mailer",
+    "local_mailer": {
+      "from": "test@test.com",
+      "transport": {
+        "pool": true,
+        "host": "<smtp server>",
+        "port": 465,
+        "secure": true,
+        "auth": {
+          "user": "<username>",
+          "pass": "<password>"
+        }
+      }
+    },
+    "mailgun": {
+      "key": "",
+      "from": "",
+      "domain": ""
+    }
+  },
+  "atrigger": {
+    "key": "",
+    "secret": ""
+  }
+}

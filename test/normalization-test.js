@@ -1,0 +1,18 @@
+const normalize = require('../engine/normalize')
+const assert = require('assert')
+
+assert.equal(normalize(""), "")
+assert.equal(normalize(",,.,."), "")
+assert.equal(normalize("/start"), "/start")
+assert.equal(normalize(" "), "")
+assert.equal(normalize("asd123"), "asd123")
+assert.equal(normalize("aSd"), "asd")
+assert.equal(normalize("фыв"), "фыв")
+assert.equal(normalize("ФыВ"), "фыв")
+assert.equal(normalize("a.s.d"), "a s d")
+assert.equal(normalize("aa  dd"), "aa dd")
+assert.equal(normalize("aa  dd"), "aa dd")
+assert.equal(normalize("aa\ndd"), "aa dd")
+assert.equal(normalize(" aa\ndd "), "aa dd")
+
+console.log("All tests passed")

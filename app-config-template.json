@@ -1,0 +1,55 @@
+{
+  "http": {
+    "base_url": "http://localhost",
+    "port": 5000,
+    "public_html_dir": "public"
+  },
+  "bot": {
+    "file": ""
+  },
+  "mongodb": {
+    "url": "mongodb://user:password@localhost:27017/db-name",
+    "db": "db-name"
+  },
+  "facebook": {
+    "webhook_path": "/webhook/",
+    "webhook_verification_token": "",
+    "page_access_token": "",
+    "policy_enforcement_email": "",
+    "log_echos": false,
+    "admins": [
+      { "psid": "", "name": "" }
+    ],
+    "page_id": ""
+  },
+  "logging": {
+    "send_logs_to": "",
+    "event_log_token": "",
+    "log_http_requests": true
+  },
+  "mailer": {
+    "from_name": "",
+    "local_mailer": {
+      "from": "",
+      "transport": {
+        "pool": true,
+        "host": "",
+        "port": 465,
+        "secure": true,
+        "auth": {
+          "user": "",
+          "pass": ""
+        }
+      }
+    },
+    "mailgun": {
+      "key": "",
+      "from": "",
+      "domain": ""
+    }
+  },
+  "atrigger": {
+    "key": "",
+    "secret": ""
+  }
+}

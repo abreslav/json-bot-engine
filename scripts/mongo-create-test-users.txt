@@ -1,0 +1,19 @@
+use admin
+db.createUser(
+  {
+    user: "admin",
+    pwd: "test",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+db.auth("admin", "test")
+
+use test
+db.createUser(
+  {
+    user: "test",
+    pwd: "test",
+    roles: [ { role: "readWrite", db: "test" } ]
+  }
+)
+

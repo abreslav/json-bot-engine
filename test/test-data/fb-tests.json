@@ -1,0 +1,2760 @@
+{
+  "messaging_policy_enforcement": {
+    "bot": {},
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "recipient":{
+                    "id":"PAGE_ID"
+                  },
+                  "timestamp":1458692752478,
+                  "policy-enforcement":{
+                    "action":"block",
+                    "reason":"The bot violated our Platform Policies (https://developers.facebook.com/policy/#messengerplatform). Common violations include sending out excessive spammy messages or being non-functional."
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent":  [
+          {
+            "email_to": [
+              "test@test.com"
+            ],
+            "subject": "Alert: Policy enforcement message",
+            "body": "{\n  \"recipient\": {\n    \"id\": \"PAGE_ID\"\n  },\n  \"timestamp\": 1458692752478,\n  \"policy-enforcement\": {\n    \"action\": \"block\",\n    \"reason\": \"The bot violated our Platform Policies (https://developers.facebook.com/policy/#messengerplatform). Common violations include sending out excessive spammy messages or being non-functional.\"\n  }\n}"
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "text": {
+    "bot": {
+      "__on_start": [
+        { "text": "OK" }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "OK"
+        }
+      }
+    ]
+  },
+
+
+  "text2": {
+    "bot": {
+      "__on_start": [
+        { "text": "1" },
+        { "text": "2" }
+      ]
+    },
+    "expected_messages_sent": [
+      { "message": { "text": "1" } },
+      { "message": { "text": "2" } }
+    ]
+  },
+
+
+  "vars": {
+    "bot": {
+      "__on_start": [
+        { "assign": "${var}", "value": "val"},
+        { "text": "${user_first_name},${var},${messenger_user_id}" }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "First,val,1"
+        }
+      }
+    ]
+  },
+
+
+  "assign_null": {
+    "bot": {
+      "__on_start": [
+        { "assign": "${var}", "value": "val"},
+        { "assign": "${var}", "value": null},
+        { "text": "var = ${var}" }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "var = <no value>"
+        }
+      }
+    ]
+  },
+
+
+  "quick_replies": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "QR",
+          "quick_replies": [
+            { "title": "1", "goto": "1" },
+            { "title": "2", "goto": "2" }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "QR",
+          "quick_replies": [
+            {
+              "content_type": "text",
+              "title": "1",
+              "payload": "{\"goto\":\"1\"}"
+            },
+            {
+              "content_type": "text",
+              "title": "2",
+              "payload": "{\"goto\":\"2\"}"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+
+  "buttons": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "Buttons",
+          "buttons": [
+            { "title": "1", "goto": "1" },
+            { "title": "2", "goto": "2" }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "button",
+              "text": "Buttons",
+              "buttons": [
+                {
+                  "type": "postback",
+                  "title": "1",
+                  "payload": "{\"goto\":\"1\"}"
+                },
+                {
+                  "type": "postback",
+                  "title": "2",
+                  "payload": "{\"goto\":\"2\"}"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+
+
+  "buttons_no_user_input": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "Buttons",
+          "buttons": [
+            { "title": "1", "goto": "1" },
+            { "title": "2", "goto": "2" }
+          ]
+        },
+        {"text": "After buttons"}
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "button",
+              "text": "Buttons",
+              "buttons": [
+                {
+                  "type": "postback",
+                  "title": "1",
+                  "payload": "{\"goto\":\"1\"}"
+                },
+                {
+                  "type": "postback",
+                  "title": "2",
+                  "payload": "{\"goto\":\"2\"}"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {"message":{"text":"After buttons"}}
+    ]
+  },
+
+
+  "buttons_user_input": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "Buttons",
+          "buttons": [
+            { "title": "1", "goto": "1", "user_input": ["1"] },
+            { "title": "2", "goto": "2" }
+          ]
+        },
+        {"text": "After buttons"}
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "button",
+              "text": "Buttons",
+              "buttons": [
+                {
+                  "type": "postback",
+                  "title": "1",
+                  "payload": "{\"goto\":\"1\"}"
+                },
+                {
+                  "type": "postback",
+                  "title": "2",
+                  "payload": "{\"goto\":\"2\"}"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+
+
+  "gallery": {
+    "bot": {
+      "__on_start": [
+        {
+          "gallery": [
+            {
+              "image_url": "https://image.ibb.co/iskP76/0.png",
+              "title": "Мы подобрали для вас 2х специалистов",
+              "subtitle": "Очень старались, между прочим!",
+              "buttons": [
+                { "title": "Google", "web_url": "http://google.com" },
+                { "title": "Назад", "goto": "__on_start" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/kuRWn6/image.png",
+              "title": "Москва, м. Войковская",
+              "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+              "buttons": [
+                { "title": "Google", "web_url": "http://google.com" },
+                { "title": "Контакты", "goto": "Блок Контакты" }
+              ]
+            },
+            {
+              "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+              "title": "Москва, м. Третьяковская",
+              "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+              "buttons": [
+                { "title": "ya.ru", "web_url": "http://ya.ru" },
+                { "title": "Контакты", "goto": "Блок Контакты 2" }
+              ]
+            }
+          ],
+          "image_aspect_ratio": "square"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "generic",
+              "image_aspect_ratio": "square",
+              "elements": [
+                {
+                  "title": "Мы подобрали для вас 2х специалистов",
+                  "subtitle": "Очень старались, между прочим!",
+                  "image_url": "https://image.ibb.co/iskP76/0.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Назад",
+                      "payload": "{\"goto\":\"__on_start\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Войковская",
+                  "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+                  "image_url": "https://image.ibb.co/kuRWn6/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Третьяковская",
+                  "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+                  "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "ya.ru",
+                      "url": "http://ya.ru",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты 2\"}"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+
+
+  "gallery_refs": {
+    "bot": {
+      "__on_start": [
+        {
+          "gallery": [
+            {"refs": ["item1"]},
+            {"refs": ["item2", "item3", "item3"]}
+          ],
+          "image_aspect_ratio": "square"
+        }
+      ],
+      "item1": {
+        "image_url": "https://image.ibb.co/iskP76/0.png",
+        "title": "Мы подобрали для вас 2х специалистов",
+        "subtitle": "Очень старались, между прочим!",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Назад",
+            "goto": "__on_start"
+          }
+        ]
+      },
+      "item2": {
+        "image_url": "https://image.ibb.co/kuRWn6/image.png",
+        "title": "Москва, м. Войковская",
+        "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Контакты",
+            "goto": "Блок Контакты"
+          }
+        ]
+      },
+      "item3": {
+        "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+        "title": "Москва, м. Третьяковская",
+        "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+        "buttons": [
+          {
+            "title": "ya.ru",
+            "web_url": "http://ya.ru"
+          },
+          {
+            "title": "Контакты",
+            "goto": "Блок Контакты 2"
+          }
+        ]
+      }
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "generic",
+              "image_aspect_ratio": "square",
+              "elements": [
+                {
+                  "title": "Мы подобрали для вас 2х специалистов",
+                  "subtitle": "Очень старались, между прочим!",
+                  "image_url": "https://image.ibb.co/iskP76/0.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Назад",
+                      "payload": "{\"goto\":\"__on_start\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Войковская",
+                  "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+                  "image_url": "https://image.ibb.co/kuRWn6/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Третьяковская",
+                  "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+                  "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "ya.ru",
+                      "url": "http://ya.ru",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты 2\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Третьяковская",
+                  "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+                  "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "ya.ru",
+                      "url": "http://ya.ru",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты 2\"}"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+
+
+  "gallery_refs_vars": {
+    "bot": {
+      "__on_start": [
+        { "assign": "${v1}", "value": "item1"},
+        { "assign": "${v2}", "value": ["item2"]},
+        { "append": "${v2}", "value": "item3"},
+        {
+          "gallery": [
+            {"refs": ["${v1}"]},
+            {"refs": {"deref": "${v2}"}}
+          ],
+          "image_aspect_ratio": "square"
+        }
+      ],
+      "item1": {
+        "image_url": "https://image.ibb.co/iskP76/0.png",
+        "title": "Мы подобрали для вас 2х специалистов",
+        "subtitle": "Очень старались, между прочим!",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Назад",
+            "goto": "__on_start"
+          }
+        ]
+      },
+      "item2": {
+        "image_url": "https://image.ibb.co/kuRWn6/image.png",
+        "title": "Москва, м. Войковская",
+        "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Контакты",
+            "goto": "Блок Контакты"
+          }
+        ]
+      },
+      "item3": {
+        "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+        "title": "Москва, м. Третьяковская",
+        "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+        "buttons": [
+          {
+            "title": "ya.ru",
+            "web_url": "http://ya.ru"
+          },
+          {
+            "title": "Контакты",
+            "goto": "Блок Контакты 2"
+          }
+        ]
+      }
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "generic",
+              "image_aspect_ratio": "square",
+              "elements": [
+                {
+                  "title": "Мы подобрали для вас 2х специалистов",
+                  "subtitle": "Очень старались, между прочим!",
+                  "image_url": "https://image.ibb.co/iskP76/0.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Назад",
+                      "payload": "{\"goto\":\"__on_start\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Войковская",
+                  "subtitle": "Опыт работы: 11 лет\nСтоимость сессии: 4000 руб",
+                  "image_url": "https://image.ibb.co/kuRWn6/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "Google",
+                      "url": "http://google.com",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты\"}"
+                    }
+                  ]
+                },
+                {
+                  "title": "Москва, м. Третьяковская",
+                  "subtitle": "Опыт работы: 5 лет\nСтоимость сессии: 2000 руб",
+                  "image_url": "https://image.ibb.co/hgm8Zm/image.png",
+                  "buttons": [
+                    {
+                      "type": "web_url",
+                      "title": "ya.ru",
+                      "url": "http://ya.ru",
+                      "webview_height_ratio": "full"
+                    },
+                    {
+                      "type": "postback",
+                      "title": "Контакты",
+                      "payload": "{\"goto\":\"Блок Контакты 2\"}"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+
+
+  "typing": {
+    "bot": {
+      "__on_start": [
+        { "typing": 10 }
+      ]
+    },
+    "expected_messages_sent": [
+      { "sender_action": "typing_on" }
+    ]
+  },
+
+
+  "goto": {
+    "bot": {
+      "__on_start": [
+        { "text": "1" },
+        { "goto": "234" },
+        { "text": "5" }
+      ],
+      "234": [
+        { "text": "2" },
+        { "goto": "3" },
+        { "text": "4" }
+      ],
+      "3": [
+        { "text": "3" }
+      ]
+    },
+    "expected_messages_sent": [
+      { "message": { "text": "1" } },
+      { "message": { "text": "2" } },
+      { "message": { "text": "3" } },
+      { "message": { "text": "4" } },
+      { "message": { "text": "5" } }
+    ]
+  },
+
+
+  "goto_no_return": {
+    "bot": {
+      "__on_start": [
+        { "text": "1" },
+        { "goto": "234" },
+        { "text": "5" }
+      ],
+      "234": [
+        { "text": "2" },
+        { "goto": "3", "no_return": true },
+        { "text": "4" }
+      ],
+      "3": [
+        { "text": "3" }
+      ]
+    },
+    "expected_messages_sent": [
+      { "message": { "text": "1" } },
+      { "message": { "text": "2" } },
+      { "message": { "text": "3" } }
+    ]
+  },
+
+
+  "receive_text": {
+    "bot": {
+      "__initialize": [
+        {
+          "user_input": [ "/start" ],
+          "goto": "block"
+        }
+      ],
+      "block": [
+        {
+          "text": "OK"
+        }
+      ]
+    },
+    "request": {
+      "object": "page",
+      "entry": [
+        {
+          "id": "512395735799244",
+          "time": 1514900441216,
+          "messaging": [
+            {
+              "sender": {
+                "id": "1"
+              },
+              "recipient": {
+                "id": "512395735799244"
+              },
+              "timestamp": 1514900436352,
+              "message": {
+                "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                "seq": 169151,
+                "text": "/start"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "OK"
+        }
+      }
+    ]
+  },
+
+
+  "receive_text_no_handler": {
+    "bot": {
+      "block": [
+        {
+          "text": "${last_user_message}"
+        }
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "User text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": []
+      },
+      {
+        "goto": "block",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "text": "User text"
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "input": {
+    "bot": {
+      "__on_start": [
+        { "input": "${a}" },
+        { "text": "${a}" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": []
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "User input"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "User input" } }
+        ]
+      }
+    ]
+  },
+
+
+  "input_after_button": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "QR",
+          "buttons": [
+            { "title": "1", "goto": "1", "user_input": ["1"] },
+            { "title": "2", "goto": "2", "user_input": ["2"] }
+          ]
+        }
+      ],
+      "1": [
+        { "text": "In 1" }
+      ],
+      "2": [
+        { "text": "In 2" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "In 1" } }
+        ]
+      }
+    ]
+  },
+
+
+  "input_after_qr": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "QR",
+          "quick_replies": [
+            { "title": "1", "goto": "1", "user_input": ["1"] },
+            { "title": "2", "goto": "2", "user_input": ["2"] }
+          ]
+        }
+      ],
+      "1": [
+        { "text": "In 1" }
+      ],
+      "2": [
+        { "text": "In 2" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "In 1" } }
+        ]
+      }
+    ]
+  },
+
+
+  "input_after_qr_received": {
+    "bot": {
+      "__initialize": [
+        {
+          "user_input": ["1"],
+          "goto": "2"
+        }
+      ],
+      "__on_start": [
+        {
+          "text": "QR",
+          "quick_replies": [
+            { "title": "1", "goto": "1", "user_input": ["1"] },
+            { "title": "2", "goto": "2", "user_input": ["2"] }
+          ]
+        }
+      ],
+      "1": [
+        { "text": "In 1" }
+      ],
+      "2": [
+        { "text": "In 2" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514975609042,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514975608774,
+                  "message": {
+                    "quick_reply": {
+                      "payload": "{\"goto\":\"1\"}"
+                    },
+                    "mid": "mid.$cAAGI9k0XrfZm7NqHxlgu5U62mJw3",
+                    "seq": 169228,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "In 1" } }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "In 2" } }
+        ]
+      }
+    ]
+  },
+
+
+  "input_bypass_qr_received": {
+    "bot": {
+      "__initialize": [
+        {
+          "user_input": ["foo"],
+          "goto": "2"
+        }
+      ],
+      "__on_start": [
+        {
+          "text": "QR",
+          "quick_replies": [
+            { "title": "1", "goto": "1", "user_input": ["1"] },
+            { "title": "2", "goto": "2", "user_input": ["2"] }
+          ]
+        }
+      ],
+      "1": [
+        { "text": "In 1" }
+      ],
+      "2": [
+        { "text": "In 2" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514975609042,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514975608774,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm7NqHxlgu5U62mJw3",
+                    "seq": 169228,
+                    "text": "foo"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "In 2" } }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+        ]
+      }
+    ]
+  },
+
+
+  "__on_unrecognized": {
+    "bot": {
+      "__on_start": [
+      ],
+      "__on_unrecognized": [
+        { "text": "Unrecognized: ${last_user_message}" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "Unrecognized: 1" } }
+        ]
+      }
+    ]
+  },
+
+
+  "__on_unrecognized_not_called_after_input": {
+    "bot": {
+      "__on_start": [
+        {"input": "${a}"},
+        {"text": "${a}"}
+      ],
+      "__on_unrecognized": [
+        { "text": "Unrecognized: ${last_user_message}" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "1" } }
+        ]
+      }
+    ]
+  },
+
+
+  "receive_get_started": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "OK"
+        }
+      ]
+    },
+    "request": {
+      "object": "page",
+      "entry": [
+        {
+          "id": "512395735799244",
+          "time": 1514966142613,
+          "messaging": [
+            {
+              "recipient": {
+                "id": "512395735799244"
+              },
+              "timestamp": 1514966142613,
+              "sender": {
+                "id": "1"
+              },
+              "postback": {
+                "payload": "{\"goto\":\"__on_start\",\"get_started\":true}",
+                "title": "Get Started"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "OK"
+        }
+      }
+    ]
+  },
+
+
+  "follow_postback_button": {
+    "bot": {
+      "__on_start": [
+        { "text": "1" },
+        { "text": "2" }
+      ]
+    },
+    "request": {
+      "object": "page",
+      "entry": [
+        {
+          "id": "512395735799244",
+          "time": 1514882509376,
+          "messaging": [
+            {
+              "recipient": {
+                "id": "512395735799244"
+              },
+              "timestamp": 1514882509376,
+              "sender": {
+                "id": "1"
+              },
+              "postback": {
+                "payload": "{\"message_type\":\"service\",\"goto\":\"__on_start\"}",
+                "title": "Начать заново"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "1"
+        }
+      },
+      {
+        "message": {
+          "text": "2"
+        }
+      }
+    ]
+  },
+
+
+  "fb_specific": {
+    "bot": {
+      "__initialize": [
+        {
+          "messenger": "facebook",
+          "greeting": [
+            {
+              "locale": "default",
+              "text": "Hello!"
+            },
+            {
+              "locale": "en_US",
+              "text": "Timeless apparel for the masses."
+            }
+          ]
+        }
+      ],
+      "__on_start": [
+        { "text": "OK" }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "greeting": [
+          {
+            "locale": "default",
+            "text": "Hello!"
+          },
+          {
+            "locale": "en_US",
+            "text": "Timeless apparel for the masses."
+          }
+        ]
+      },
+      {
+        "message": {
+          "text": "OK"
+        }
+      }
+    ]
+  },
+
+
+  "follow_quick_reply": {
+    "bot": {
+      "Предопределенные переменные, текст, картинки": [
+        { "text": "OK" }
+      ]
+    },
+    "request": {
+      "object": "page",
+      "entry": [
+        {
+          "id": "512395735799244",
+          "time": 1514975609042,
+          "messaging": [
+            {
+              "sender": {
+                "id": "1"
+              },
+              "recipient": {
+                "id": "512395735799244"
+              },
+              "timestamp": 1514975608774,
+              "message": {
+                "quick_reply": {
+                  "payload": "{\"goto\":\"Предопределенные переменные, текст, картинки\"}"
+                },
+                "mid": "mid.$cAAGI9k0XrfZm7NqHxlgu5U62mJw3",
+                "seq": 169228,
+                "text": "Предопределенные пер..."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "message": {
+          "text": "OK"
+        }
+      }
+    ]
+  },
+
+  "email": {
+    "bot": {
+      "__on_start": [
+        { "assign": "${var}", "value": "value"},
+        {
+          "email_to": ["user@domain.com"],
+          "subject": "Subject: ${var}",
+          "body": "Body: ${var}"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "email_to": ["user@domain.com"],
+        "subject": "Subject: value",
+        "body": "Body: value"
+      }
+    ]
+  },
+
+  "conditionals": {
+    "bot_file": "./test-data/stage3.json",
+    "script": [
+      {
+        "goto": "Условия",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "text": "OK: else"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: x == x"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: x != y"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: abc contains bc"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: bc !contains abc"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: v != null"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: v == null"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: !(v == null)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a == a) && (b == b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a == a) && (b != b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a != a) && (b == b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a != a) && (b != b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a == a) || (b == b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a == a) || (b != b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a != a) || (b == b)"
+            }
+          },
+          {
+            "message": {
+              "text": "OK: (a != a) || (b != b)"
+            }
+          },
+          {
+            "message": {
+              "text": "Done"
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "events": {
+    "bot": {
+      "b1": [
+        {"event": "e1", "unique": true, "data": "foo"},
+        {"text": "Hi"},
+        {"event": "e2", "data": {"foo": "bar"}},
+        {"goto": "b2"}
+      ],
+      "b2": [
+        {"event": "e2", "data": {"foo": "bar"}},
+        {"event": "e1", "unique": true, "data": "foo"},
+        {"event": "e3"}
+      ]
+    },
+    "script": [
+      {"goto": "b1", "user_id": "1"},
+      {"goto": "b2", "user_id": "1"},
+      {"goto": "b1", "user_id": "2"},
+      {"goto": "b1", "user_id": "2"},
+      {
+        "expected_log": [
+          {
+            "event_type": "e1",
+            "current_block": "b1",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b1",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b2",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b2",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b2"
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b2",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b2",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b2"
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b1",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b1",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b2",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b2",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b2"
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b1",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b1",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b2",
+            "data": {
+              "foo": "bar"
+            }
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b2",
+            "data": "foo",
+            "unique": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b2"
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "events_start_new_session": {
+    "bot": {
+      "b1": [
+        {"event": "e1", "unique": true},
+        {"event": "e1", "unique": true, "start_new_session": true},
+        {"event": "e2"},
+        {"event": "e3", "unique": true},
+        {"event": "e4", "start_new_session": true},
+        {"event": "e3", "unique": true},
+        {"event": "e3", "unique": true}
+      ]
+    },
+    "script": [
+      {"goto": "b1", "user_id": "1"},
+      {
+        "expected_log": [
+          {
+            "event_type": "e1",
+            "current_block": "b1",
+            "unique": true
+          },
+          {
+            "event_type": "e1",
+            "current_block": "b1",
+            "unique": true,
+            "start_new_session": true
+          },
+          {
+            "event_type": "e2",
+            "current_block": "b1"
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b1",
+            "unique": true
+          },
+          {
+            "event_type": "e4",
+            "current_block": "b1",
+            "start_new_session": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b1",
+            "unique": true
+          },
+          {
+            "event_type": "e3",
+            "current_block": "b1",
+            "unique": true
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "goto_instead_of_input": {
+    "bot": {
+      "__on_unrecognized": [
+        { "text": "Unrecognized: ${last_user_message}" }
+      ],
+      "__on_start": [
+        { "text": "start" },
+        { "input": "${v}" },
+        { "text": "input: ${v}" }
+      ],
+      "pb": [
+        { "text": "pb" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": [
+          { "message" : {"text": "start"} }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514882509376,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514882509376,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"pb\"}",
+                    "title": "Начать заново"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "pb"} }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "free text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "Unrecognized: free text"} }
+        ]
+      }
+    ]
+
+  },
+
+
+  "unexpected_goto": {
+    "bot": {
+      "__on_start": [
+        { "text": "start" },
+        {
+          "text": "QR",
+          "quick_replies": [
+            { "title": "1", "goto": "1" },
+            { "title": "2", "goto": "2" }
+          ]
+        },
+        { "text": "end" }
+      ],
+      "pb": [
+        { "text": "pb" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "text": "start"
+            }
+          },
+          {
+            "message": {
+              "text": "QR",
+              "quick_replies": [
+                {
+                  "content_type": "text",
+                  "title": "1",
+                  "payload": "{\"goto\":\"1\"}"
+                },
+                {
+                  "content_type": "text",
+                  "title": "2",
+                  "payload": "{\"goto\":\"2\"}"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514882509376,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514882509376,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"pb\"}",
+                    "title": "Начать заново"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "pb"} }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514975609042,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514975608774,
+                  "message": {
+                    "quick_reply": {
+                      "payload": "{\"goto\":\"pb\"}"
+                    },
+                    "mid": "mid.$cAAGI9k0XrfZm7NqHxlgu5U62mJw3",
+                    "seq": 169228,
+                    "text": "pb"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "pb"} }
+        ]
+      }
+    ]
+
+  },
+
+
+  "expected_goto": {
+    "bot": {
+      "__on_start": [
+        { "text": "start" },
+        {
+          "text": "QR",
+          "buttons": [
+            { "title": "1", "goto": "1", "user_input": [] },
+            { "title": "2", "goto": "2" }
+          ]
+        },
+        { "text": "end" }
+      ],
+      "1": [
+        { "text": "1" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start"
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514882509376,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514882509376,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"1\"}",
+                    "title": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "1"} },
+          { "message" : {"text": "end"} }
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514975609042,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514975608774,
+                  "message": {
+                    "quick_reply": {
+                      "payload": "{\"goto\":\"1\"}"
+                    },
+                    "mid": "mid.$cAAGI9k0XrfZm7NqHxlgu5U62mJw3",
+                    "seq": 169228,
+                    "text": "1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message" : {"text": "1"} }
+        ]
+      }
+    ]
+
+  },
+
+
+  "ref_link": {
+    "bot": {
+      "__initialize": [
+        {
+          "url_ref_tag": "tag",
+          "goto": "block"
+        }
+      ],
+      "block": [
+        {"text": "OK: ${url_ref_tag}"}
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516128600360,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516128600360,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "referral": {
+                    "ref": "tag",
+                    "source": "SHORTLINK",
+                    "type": "OPEN_THREAD"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {"message": {"text": "OK: tag"}}
+        ]
+      },
+      {
+        "goto": "block",
+        "expected_messages_sent": [
+          {"message": {"text": "OK: tag"}}
+        ]
+      }
+    ]
+  },
+
+
+  "ref_link_no_goto": {
+    "bot": {
+      "block": [
+        {"text": "OK: ${url_ref_tag}"}
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516128600360,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516128600360,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "referral": {
+                    "ref": "tag",
+                    "source": "SHORTLINK",
+                    "type": "OPEN_THREAD"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": []
+      },
+      {
+        "goto": "block",
+        "expected_messages_sent": [
+          {"message": {"text": "OK: tag"}}
+        ]
+      }
+    ]
+  },
+
+
+  "ref_get_started": {
+    "bot": {
+      "__initialize": [
+        {
+          "url_ref_tag": "tag",
+          "goto": "block"
+        }
+      ],
+      "__on_start": [
+        {"text": "__on_start: ${url_ref_tag}"}
+      ],
+      "block": [
+        {"text": "OK: ${url_ref_tag}"}
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516130282843,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516130282843,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"__on_start\",\"get_started\":true}",
+                    "referral": {
+                      "ref": "tag",
+                      "source": "SHORTLINK",
+                      "type": "OPEN_THREAD"
+                    },
+                    "title": "Get Started"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {"message": {"text": "OK: tag"}}
+        ]
+      }
+    ]
+  },
+
+
+  "ref_get_started_no_goto": {
+    "bot": {
+      "__on_start": [
+        {"text": "__on_start: ${url_ref_tag}"}
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516130282843,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516130282843,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"__on_start\",\"get_started\":true}",
+                    "referral": {
+                      "ref": "tag",
+                      "source": "SHORTLINK",
+                      "type": "OPEN_THREAD"
+                    },
+                    "title": "Get Started"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {"message": {"text": "__on_start: tag"}}
+        ]
+      }
+    ]
+  },
+
+
+  "ref_get_started_referral_exists": {
+    "bot": {
+      "__on_start": [
+        {"text": "__on_start: ${url_ref_tag}"}
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516130282843,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516130282843,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"__on_start\"}",
+                    "referral": {
+                      "ref": "tag",
+                      "source": "SHORTLINK",
+                      "type": "OPEN_THREAD"
+                    },
+                    "title": "Get Started"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {"message": {"text": "__on_start: tag"}}
+        ]
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516130282843,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516130282843,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "postback": {
+                    "payload": "{\"goto\":\"__on_start\",\"get_started\":true}",
+                    "title": "Get Started"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {"message": {"text": "__on_start: <no value>"}}
+        ]
+      }
+    ]
+  },
+
+
+  "ref_after_input": {
+    "bot": {
+      "__on_start": [
+        { "input": "${a}" },
+        { "text": "${a}" }
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": []
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1516128600360,
+              "messaging": [
+                {
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1516128600360,
+                  "sender": {
+                    "id": "1"
+                  },
+                  "referral": {
+                    "ref": "tag",
+                    "source": "SHORTLINK",
+                    "type": "OPEN_THREAD"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": []
+      },
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "512395735799244",
+              "time": 1514900441216,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1"
+                  },
+                  "recipient": {
+                    "id": "512395735799244"
+                  },
+                  "timestamp": 1514900436352,
+                  "message": {
+                    "mid": "mid.$cAAGI9k0XrfZm6F99gFgtxo0eZgqe",
+                    "seq": 169151,
+                    "text": "User input"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          { "message": { "text": "User input" } }
+        ]
+      }
+    ]
+  },
+
+
+  "arrays": {
+    "bot": {
+      "__on_start": [
+        {"assign": "${a}", "value": []},
+        {"text": "${a}"},
+        {"assign": "${a}", "value": ["1"]},
+        {"text": "${a}"},
+        {"assign": "${a}", "value": ["1", "2", "3"]},
+        {"text": "${a}"},
+        {"assign": "${b}", "value": "${a}"},
+        {"text": "${b}"},
+        {"assign": "${b}", "value": {"deref": "${a}"}},
+        {"text": "${b}"},
+        {"append": "${b}", "value": "4"},
+        {"text": "${b}"},
+        {"assign": "${a}", "value": []},
+        {"append": "${a}", "value": "1"},
+        {"append": "${a}", "value": "2"},
+        {"append": "${a}", "value": "3"},
+        {"text": "${a}"},
+        {"append": "${c}", "value": "3"},
+        {"text": "${c}"}
+      ]
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "text": ""
+            }
+          },
+          {
+            "message": {
+              "text": "1"
+            }
+          },
+          {
+            "message": {
+              "text": "1,2,3"
+            }
+          },
+          {
+            "message": {
+              "text": "1,2,3"
+            }
+          },
+          {
+            "message": {
+              "text": "1,2,3"
+            }
+          },
+          {
+            "message": {
+              "text": "1,2,3,4"
+            }
+          },
+          {
+            "message": {
+              "text": "1,2,3"
+            }
+          },
+          {
+            "message": {
+              "text": "3"
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "random": {
+    "bot": {
+      "block": [
+        {"assign": "${v}", "value": []},
+        {
+          "random": 3,
+          "options": [
+            {"append": "${v}", "value": "x"},
+            {"append": "${v}", "value": "x"},
+            {"append": "${v}", "value": "x"},
+            {"append": "${v}", "value": "x"},
+            {"append": "${v}", "value": "x"}
+          ]
+        },
+        {"text": "${v}"}
+      ]
+    },
+    "script": [
+      {
+        "goto": "block",
+        "expected_messages_sent": [ {
+          "message": {
+            "text": "x,x,x"
+          }
+        }]
+      }
+    ]
+  },
+
+
+  "random_gallery": {
+    "bot": {
+      "block": [
+        {"assign": "${v}", "value": []},
+        {
+          "random": 3,
+          "options": [
+            {"append": "${v}", "value": "item1"},
+            {"append": "${v}", "value": "item1"},
+            {"append": "${v}", "value": "item1"},
+            {"append": "${v}", "value": "item1"},
+            {"append": "${v}", "value": "item1"}
+          ]
+        },
+        {
+          "gallery": [
+            {"refs": {"deref": "${v}"}}
+          ],
+          "image_aspect_ratio": "square"
+        }
+      ],
+      "item1": {
+        "image_url": "https://image.ibb.co/iskP76/0.png",
+        "title": "Мы подобрали для вас 2х специалистов",
+        "subtitle": "Очень старались, между прочим!",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Назад",
+            "goto": "__on_start"
+          }
+        ]
+      }
+    },
+    "script": [
+      {
+        "goto": "block",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "attachment": {
+                "type": "template",
+                "payload": {
+                  "template_type": "generic",
+                  "image_aspect_ratio": "square",
+                  "elements": [
+                    {
+                      "title": "Мы подобрали для вас 2х специалистов",
+                      "subtitle": "Очень старались, между прочим!",
+                      "image_url": "https://image.ibb.co/iskP76/0.png",
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "title": "Google",
+                          "url": "http://google.com",
+                          "webview_height_ratio": "full"
+                        },
+                        {
+                          "type": "postback",
+                          "title": "Назад",
+                          "payload": "{\"goto\":\"__on_start\"}"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Мы подобрали для вас 2х специалистов",
+                      "subtitle": "Очень старались, между прочим!",
+                      "image_url": "https://image.ibb.co/iskP76/0.png",
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "title": "Google",
+                          "url": "http://google.com",
+                          "webview_height_ratio": "full"
+                        },
+                        {
+                          "type": "postback",
+                          "title": "Назад",
+                          "payload": "{\"goto\":\"__on_start\"}"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "Мы подобрали для вас 2х специалистов",
+                      "subtitle": "Очень старались, между прочим!",
+                      "image_url": "https://image.ibb.co/iskP76/0.png",
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "title": "Google",
+                          "url": "http://google.com",
+                          "webview_height_ratio": "full"
+                        },
+                        {
+                          "type": "postback",
+                          "title": "Назад",
+                          "payload": "{\"goto\":\"__on_start\"}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "random_arrays": {
+    "bot": {
+      "block": [
+        {
+          "assign": "${психологи}",
+          "value": []
+        },
+        {
+          "random": 3,
+          "options": [
+            {
+              "append": "${психологи}",
+              "value": "К. Мирзоян"
+            },
+            {
+              "append": "${психологи}",
+              "value": "С. Мардоян"
+            },
+            {
+              "append": "${психологи}",
+              "value": "С. Косых"
+            },
+            {
+              "append": "${психологи}",
+              "value": "И. Грибов"
+            },
+            {
+              "append": "${психологи}",
+              "value": "М. Сабунаева"
+            },
+            {
+              "append": "${психологи}",
+              "value": "В. Морозова"
+            }
+          ]
+        },
+        { "text": "${психологи}"}
+      ]
+    },
+    "script": [
+      {
+        "goto": "block",
+        "check": {
+          "regex": "^[^,]+,[^,]+,[^,]+$",
+          "value": "${психологи}"
+        }
+      },
+      {
+        "goto": "block",
+        "check": {
+          "regex": "^[^,]+,[^,]+,[^,]+$",
+          "value": "${психологи}"
+        }
+      }
+    ]
+  },
+
+  "base_url": {
+    "bot": {
+      "__on_start": [
+        {
+          "gallery": [
+            {"refs": ["ref"]}
+          ],
+          "image_aspect_ratio": "square"
+        }
+      ],
+      "ref": {
+        "image_url": "${server_base_url}/iskP76/0.png",
+        "title": "Мы подобрали для вас 2х специалистов",
+        "subtitle": "Очень старались, между прочим!",
+        "buttons": [
+          {
+            "title": "Google",
+            "web_url": "http://google.com"
+          },
+          {
+            "title": "Назад",
+            "goto": "__on_start"
+          }
+        ]
+      }
+    },
+    "script": [
+      {
+        "goto": "__on_start",
+        "expected_messages_sent": [
+          {
+            "message": {
+              "attachment": {
+                "type": "template",
+                "payload": {
+                  "template_type": "generic",
+                  "image_aspect_ratio": "square",
+                  "elements": [
+                    {
+                      "title": "Мы подобрали для вас 2х специалистов",
+                      "subtitle": "Очень старались, между прочим!",
+                      "image_url": "http://localhost/iskP76/0.png",
+                      "buttons": [
+                        {
+                          "type": "web_url",
+                          "title": "Google",
+                          "url": "http://google.com",
+                          "webview_height_ratio": "full"
+                        },
+                        {
+                          "type": "postback",
+                          "title": "Назад",
+                          "payload": "{\"goto\":\"__on_start\"}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+
+
+  "operator": {
+    "bot": {
+      "__initialize": [
+        {
+          "operator_input": [
+            "foo"
+          ],
+          "goto": "block"
+        }
+      ],
+      "block": [
+        {
+          "text": "OK: ${last_operator_message}"
+        }
+      ]
+    },
+    "script": [
+      {
+        "request": {
+          "object": "page",
+          "entry": [
+            {
+              "id": "12345",
+              "time": 1519134193812,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "12345"
+                  },
+                  "recipient": {
+                    "id": "1"
+                  },
+                  "timestamp": 1519134193675,
+                  "message": {
+                    "is_echo": true,
+                    "mid": "mid.$cAAGI9k0XrfZn5LmAC1hs3Q0ExosI",
+                    "seq": 176352,
+                    "text": "foo"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "expected_messages_sent": [
+          {
+            "message": {
+              "text": "OK: foo"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
