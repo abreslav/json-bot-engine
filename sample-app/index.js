@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 
 // our modules
 const config = require('./app-config.json')
-const appCommon = require('../app-common')(config)
+const mongoStorage = require('../engine/mongo-storage')(config)
 const BotEngine = require('../engine/bot-engine')
 const mailer = require('../engine/mailgun-mailer')(config)
 const Scheduler = require('../engine/scheduler')(config)
@@ -36,7 +36,7 @@ app.get('/', function (req, res) {
 })
 
 let server = undefined
-appCommon.run(
+mongoStorage.connect(
     (storage) => {
         let botDefinition = require(config.bot.file);
         if (botDefinition) {

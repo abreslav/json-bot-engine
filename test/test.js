@@ -4,14 +4,14 @@ const assert = require('assert')
 const { sanitizeEventLog, compareJson } = require('./test-utils')
 
 const config = require('./test-config.json')
-const appCommon = require('../app-common')(config)
+const mongoStorage = require('../engine/mongo-storage')(config)
 const fb = require('../engine/fb')(config)
 
 const BotEngine = require('../engine/bot-engine')
 BotEngine.debugDelay = true
 const PredefinedVariables = BotEngine.PredefinedVariables
 
-appCommon.run(
+mongoStorage.connect(
     async (storage) => {
         let fbTests = require('./test-data/fb-tests.json')
 
@@ -164,8 +164,6 @@ appCommon.run(
 
             console.log(`Test ${testName} passed`)
         }
-
-        return appCommon.DONE
     },
     () => {}
 )
