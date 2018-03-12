@@ -1,9 +1,8 @@
 'use strict'
 
 const RestClient = require('node-rest-client').Client
-const config = require('../app-config.json')
 
-module.exports = class {
+module.exports = (config) => class {
     constructor(storage) {
         this.storage = storage
         this.messengers = {}

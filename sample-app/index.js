@@ -5,14 +5,13 @@ const express = require('express')
 const bodyParser = require('body-parser')
 
 // our modules
-const appCommon = require('../app-common')
+const config = require('./app-config.json')
+const appCommon = require('../app-common')(config)
 const BotEngine = require('../engine/bot-engine')
-const mailer = require('../engine/mailgun-mailer')
-const Scheduler = require('../engine/scheduler')
+const mailer = require('../engine/mailgun-mailer')(config)
+const Scheduler = require('../engine/scheduler')(config)
 
-const fb = require('../engine/fb')
-
-const config = require('../app-config.json')
+const fb = require('../engine/fb')(config)
 
 const app = express()
 

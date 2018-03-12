@@ -3,12 +3,13 @@
 const assert = require('assert')
 const { sanitizeEventLog, compareJson } = require('./test-utils')
 
-const appCommon = require('../app-common')
 const config = require('./test-config.json')
+const appCommon = require('../app-common')(config)
+const fb = require('../engine/fb')(config)
+
 const BotEngine = require('../engine/bot-engine')
 BotEngine.debugDelay = true
 const PredefinedVariables = BotEngine.PredefinedVariables
-const fb = require('../engine/fb')
 
 appCommon.run(
     async (storage) => {
