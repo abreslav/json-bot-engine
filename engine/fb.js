@@ -7,9 +7,10 @@ const { PredefinedBlocks, PredefinedVariables } = require("./bot-engine")
 const MailgunMailer = require('./mailgun-mailer')
 
 module.exports = (config) => {
-    exports.testOnly = {}
+    let result = {}
+    result.testOnly = {}
 
-    exports.installWebhook = function(app, path, webhookVerificationToken, engine, scheduler) {
+    result.installWebhook = function(app, path, webhookVerificationToken, engine, scheduler) {
         scheduler.registerMessenger(
             FBMessengerApi.messenger,
             async (userId, payload) => {
@@ -125,7 +126,7 @@ module.exports = (config) => {
             }
         }
     }
-    exports.testOnly.handleRequest = handleRequest
+    result.testOnly.handleRequest = handleRequest
 
     function parsePayload(payloadString) {
         let payload = JSON.parse(payloadString)
@@ -223,7 +224,7 @@ module.exports = (config) => {
         typingOff: () => { return senderAction(typing_off_str) },
         markSeen: () => { return senderAction(mark_seen_str) },
     }
-    exports.testOnly.MessageBuilder = MessageBuilder
+    result.testOnly.MessageBuilder = MessageBuilder
 
     function sendMessengerProfileRequest(json, callback) {
         fbPost("https://graph.facebook.com/v2.6/me/messenger_profile", json, callback)
@@ -344,5 +345,5 @@ module.exports = (config) => {
         }
     }
 
-    return exports
+    return result
 }
