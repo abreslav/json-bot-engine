@@ -22,6 +22,14 @@
     ],
     "page_id": "12345"
   },
+  "telegram": {
+    "webhook_path": "/webhook/",
+    "bot_token": "test",
+    "admins": [
+      { "id": "1", "name": "Admin Admin" }
+    ],
+    "chat_id": "12345"
+  },
   "logging": {
     "log_http_requests": true
   },

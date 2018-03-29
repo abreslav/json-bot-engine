@@ -1,0 +1,212 @@
+{
+  "text": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "OK"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "OK"
+      }
+    ]
+  },
+  "text2": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "1"
+        },
+        {
+          "text": "2"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "1"
+      },
+      {
+        "text": "2"
+      }
+    ]
+  },
+  "vars": {
+    "bot": {
+      "__on_start": [
+        {
+          "assign": "${var}",
+          "value": "val"
+        },
+        {
+          "text": "${user_first_name},${var},${messenger_user_id}"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "First,val,1"
+      }
+    ]
+  },
+  "assign_null": {
+    "bot": {
+      "__on_start": [
+        {
+          "assign": "${var}",
+          "value": "val"
+        },
+        {
+          "assign": "${var}",
+          "value": null
+        },
+        {
+          "text": "var = ${var}"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "var = <no value>"
+      }
+    ]
+  },
+  "buttons_no_user_input": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "Buttons",
+          "buttons": [
+            {
+              "title": "1",
+              "goto": "1"
+            },
+            {
+              "title": "2",
+              "goto": "2"
+            }
+          ]
+        },
+        {
+          "text": "After buttons"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "Buttons",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "1",
+                "callback_data": "1"
+              },
+              {
+                "text": "2",
+                "callback_data": "2"
+              }
+            ]
+          ]
+        }
+      },
+      {
+        "text": "After buttons"
+      }
+    ]
+  },
+  "buttons_user_input": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "Buttons",
+          "buttons": [
+            {
+              "title": "1",
+              "goto": "1",
+              "user_input": [
+                "1"
+              ]
+            },
+            {
+              "title": "2",
+              "goto": "2"
+            }
+          ]
+        },
+        {
+          "text": "After buttons"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "Buttons",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "1",
+                "callback_data": "1"
+              },
+              {
+                "text": "2",
+                "callback_data": "2"
+              }
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "goto": {
+    "bot": {
+      "__on_start": [
+        {
+          "text": "1"
+        },
+        {
+          "goto": "234"
+        },
+        {
+          "text": "5"
+        }
+      ],
+      "234": [
+        {
+          "text": "2"
+        },
+        {
+          "goto": "3"
+        },
+        {
+          "text": "4"
+        }
+      ],
+      "3": [
+        {
+          "text": "3"
+        }
+      ]
+    },
+    "expected_messages_sent": [
+      {
+        "text": "1"
+      },
+      {
+        "text": "2"
+      },
+      {
+        "text": "4"
+      },
+      {
+        "text": "3"
+      },
+      {
+        "text": "5"
+      }
+    ]
+  }
+}

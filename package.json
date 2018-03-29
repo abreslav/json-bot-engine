@@ -5,7 +5,8 @@
   "repository": "gitlab.com:abreslav/alter-bot.git",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node sample-app/index.js",
+    "test": "node test/test_tg.js"
   },
   "author": "",
   "license": "ISC",
