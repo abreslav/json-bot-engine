@@ -90,39 +90,6 @@ let BotEngine = function(blocks, appContext) {
         }
     }
 
-    // { user: [[event]]}
-    this.eventLog = async () => {
-        let result = {}
-        let uniqueEventsOfCurrent = {}
-        await appContext.storage.processEvents((event) => {
-            event.timestamp = event._id.getTimestamp().toUTCString()
-            let user = result[event.user_id]
-            if (!user) {
-                result[event.user_id] = user = [[]]
-                uniqueEventsOfCurrent = {}
-            }
-
-            let currentSession = user[user.length - 1]
-            function startNewSession() {
-                currentSession = []
-                uniqueEventsOfCurrent = {}
-                user.push(currentSession)
-            }
-
-            if (event.start_new_session) {
-                startNewSession();
-            }
-            if (event.unique) {
-                if (uniqueEventsOfCurrent[event.event_type]) {
-                    startNewSession()
-                }
-                uniqueEventsOfCurrent[event.event_type] = event
-            }
-            currentSession.push(event)
-        })
-        return result
-    }
-
     this.buttonPressed = async (c, payload) => {
         await logMessageReceived(c, {
             event_source: "button",
