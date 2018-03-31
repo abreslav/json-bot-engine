@@ -11,7 +11,7 @@ const BotEngine = require('../engine/bot-engine')
 const mailer = require('../engine/mailgun-mailer')(config)
 const Scheduler = require('../engine/scheduler')(config)
 
-const fb = require('../engine/fb')(config)
+const fb = require('../engine/facebook')(config)
 
 const app = express()
 

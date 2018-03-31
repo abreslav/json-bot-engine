@@ -5,7 +5,7 @@ const { sanitizeEventLog, compareJson } = require('./test-utils')
 
 const config = require('./test-config.json')
 const mongoStorage = require('../engine/mongo-storage')(config)
-const fb = require('../engine/fb')(config)
+const fb = require('../engine/facebook')(config)
 
 const BotEngine = require('../engine/bot-engine')
 BotEngine.debugDelay = true
