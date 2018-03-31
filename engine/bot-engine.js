@@ -79,8 +79,6 @@ function error(error) {
 }
 
 let BotEngine = function(blocks, appContext) {
-    this.debugMessage = async (c, text) => await c.sender.sendDebugMessage("DEBUG: " + text)
-
     this.initEngine = async (messengerApi) => {
         let initBlock = blocks[PredefinedBlocks.INITIALIZE]
         if (initBlock) {

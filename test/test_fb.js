@@ -68,9 +68,6 @@ mongoStorage.connect(
                         sendMessage: async (load) => {
                             messagesSent.messages.push(load)
                         },
-                        sendDebugMessage: async (text) => {
-                            // no action
-                        },
                         fetchUserVariables: async () => {
                             let result = {}
                             result[PredefinedVariables.server_base_url] = config.http.base_url

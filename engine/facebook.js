@@ -156,9 +156,6 @@ module.exports = (config) => {
             extend(json, load, {recipient: {id: userId}, messaging_type: "RESPONSE"})
             await fbPost('https://graph.facebook.com/v2.6/me/messages', json)
         }
-        this.sendDebugMessage = async (text) => {
-            await this.sendMessage(MessageBuilder.text(text))
-        }
         this.fetchUserVariables = async () => {
             let response = await fbGet(
                 `https://graph.facebook.com/v2.6/${userId}`,
