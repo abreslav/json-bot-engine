@@ -81,11 +81,13 @@ async function createBotEngine(storage, botDefinition) {
     }
     let appContext = {
         storage: storage,
-        logger: {log: (msg, json) => {
+        logger: {
+            log: (msg, json) => {
                 if (msg === "User Event") {
                     messagesSent.messages.push(json)
                 }
-            }},
+            }
+        },
         scheduler: scheduler,
         pluginManager: {}
     }

@@ -495,7 +495,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
             if (instr.data) event.data = instr.data
             if (instr.unique) event.unique = true
             if (instr.start_new_session) event.start_new_session = true
-            appContext.logger.log("User Event: " + JSON.stringify(event))
+            appContext.logger.log("User Event", event)
 
             await appContext.storage.logEvent(event)
         } else {
