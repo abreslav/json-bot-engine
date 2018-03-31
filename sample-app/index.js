@@ -47,7 +47,7 @@ mongoStorage.connect(
 
         let appContext = {
             storage: storage,
-            logger: { log: console.log },
+            logger: { log: (msg, json) => console.log(msg + ": " + JSON.stringify(json)) },
             scheduler: scheduler
         }
         let botEngine = new BotEngine(botDefinition, appContext)

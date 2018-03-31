@@ -3,16 +3,11 @@
 const assert = require('assert')
 const { sanitizeEventLog, compareJson } = require('./test-utils')
 
-const config = require('./test-config.json')
-const mongoStorage = require('../engine/mongo-storage')(config)
-const fb = require('../engine/facebook')(config)
-
 const BotEngine = require('../engine/bot-engine')
-BotEngine.debugDelay = true
-const PredefinedVariables = BotEngine.PredefinedVariables
+const {withTestEnvironment} = require("./test-common")
 
-mongoStorage.connect(
-    async (storage) => {
+withTestEnvironment(
+    async (storage, createBotEngine, fb) => {
         let fbTests = require('./test-data/fb-tests.json')
 
         let testNames = process.argv.slice(2)
@@ -36,11 +31,6 @@ mongoStorage.connect(
             }
 
             console.info(`Running test: ${testName}`)
-
-            await storage.testOnly.clearStorage()
-            let messagesSent = {
-                messages: []
-            }
             let checkMessages = async (messagesSent, expectedMessagesSent) => {
                 if (!expectedMessagesSent) {
                     messagesSent.messages = []
@@ -48,70 +38,12 @@ mongoStorage.connect(
                 }
                 compareJson(testName, messagesSent.messages, expectedMessagesSent);
                 messagesSent.messages = []
-                for (let entry of await storage.testOnly.getMessageLog("1")) {
-                    console.log(JSON.stringify(entry))
-                }
+                // for (let entry of await storage.testOnly.getMessageLog("1")) {
+                // console.log(JSON.stringify(entry))
+                // }
             }
 
-            let messengerApi = {
-                messenger: "facebook",
-                processInitInstruction: (instr, callback) => {
-                    let msg = Object.assign({}, instr)
-                    delete msg.messenger
-                    messagesSent.messages.push(msg)
-                    if (callback) callback()
-                }
-            }
-            let createContext = (userId) => {
-                return {
-                    sender: {
-                        sendMessage: async (load) => {
-                            messagesSent.messages.push(load)
-                        },
-                        fetchUserVariables: async () => {
-                            let result = {}
-                            result[PredefinedVariables.server_base_url] = config.http.base_url
-                            result[PredefinedVariables.messenger_user_id] = userId
-                            result[PredefinedVariables.user_first_name] = "First"
-                            result[PredefinedVariables.user_last_name] = "Last"
-                            result[PredefinedVariables.user_pic_url] = "http://user.pic.url.com"
-                            result[PredefinedVariables.locale] = "en_US"
-                            result[PredefinedVariables.timezone] = "2"
-                            return result
-                        }
-                    },
-                    messengerApi: messengerApi,
-                    userId: userId,
-                    messageBuilder: fb.testOnly.MessageBuilder,
-                    mailer: {
-                        sendEmail: async (emailTo, subject, body) => {
-                            messagesSent.messages.push({
-                                email_to: emailTo,
-                                subject: subject,
-                                body: body
-                            })
-                            return {
-                                info: "OK"
-                            }
-                        }
-                    }
-                }
-            }
-            let scheduler = {
-                schedule: async (timeSlice, triggerName, payload) => {
-                    console.log(`SCHEDULED: ${triggerName} ${JSON.stringify(payload)}`)
-                }
-            }
-            let appContext = {
-                storage: storage,
-                logger: { log: console.log },
-                scheduler: scheduler,
-                pluginManager: {}
-            }
-
-            let botEngine = new BotEngine(botDefinition, appContext)
-
-            await botEngine.initEngine(messengerApi)
+            let {messagesSent, createContext, scheduler, appContext, botEngine} = await createBotEngine(botDefinition)
 
             if (test.script) {
                 for (let command of test.script) {
@@ -161,6 +93,5 @@ mongoStorage.connect(
 
             console.log(`Test ${testName} passed`)
         }
-    },
-    () => {}
+    }
 )
