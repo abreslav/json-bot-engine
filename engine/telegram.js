@@ -136,26 +136,22 @@ module.exports = (config) => {
 
     function inlineKeybordFromButtons(buttons) {
         return {
-            inline_keyboard: [buttons.map(it => createInlineButton(it["title"], it["goto"]))]
+            inline_keyboard: [buttons.map(it => {
+                return {
+                    text: it["title"],
+                    callback_data: it["goto"]
+                }
+            })]
         }
     }
 
     function replyKeybordFromButtons(buttons) {
         return {
-            keyboard: [buttons.map(it => createKeyboardButton(it["title"]))]
-        }
-    }
-
-    function createInlineButton(title, goto) {
-        return {
-            text: title,
-            callback_data: goto
-        }
-    }
-
-    function createKeyboardButton(title) {
-        return {
-            text: title
+            keyboard: [buttons.map(it => {
+                return {
+                    text: it["title"]
+                }
+            })]
         }
     }
 
@@ -167,6 +163,7 @@ module.exports = (config) => {
         };
         return await telegramRequest(jsonRequest);
     }
+
     function telegramRequest(jsonRequest) {
         return new Promise(resolve => {
             request(
