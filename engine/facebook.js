@@ -4,7 +4,6 @@ const request = require('request')
 const extend = require('extend')
 
 const { PredefinedBlocks, PredefinedVariables } = require("./bot-engine")
-const MailgunMailer = require('./mailgun-mailer')
 
 module.exports = (config) => {
     let result = {}
@@ -39,35 +38,12 @@ module.exports = (config) => {
                 }}
         )
     }
-
-    let mailer = MailgunMailer(config)
-    function createContext(userId, scheduler) {
+    function createContext(userId) {
         return {
             sender: new FBSender(userId),
             messengerApi: FBMessengerApi,
             userId: userId,
-            messageBuilder: MessageBuilder,
-            mailer: {
-                sendEmail: async (emailTo, subject, body) => {
-                    console.log("Sending email to " + emailTo.join())
-                    try {
-                        let r = await mailer.sendEmail(emailTo, subject, body)
-                        if (r.error) {
-                            console.error(r.error)
-                        } else {
-                            console.log("Email sent: " + JSON.stringify(r.info))
-                            return true
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-            },
-            scheduler: {
-                schedule: async (timeSlice, trigger, payload) => {
-                    await scheduler.schedule(FBMessengerApi.messenger, userId, timeSlice, trigger, payload)
-                }
-            }
+            messageBuilder: MessageBuilder
         }
     }
 

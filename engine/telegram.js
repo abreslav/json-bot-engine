@@ -5,11 +5,12 @@ const extend = require('extend')
 
 const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
 const MailgunMailer = require('./mailgun-mailer')
+const LoggingMailer = require('./logginig-mailer')
 
 module.exports = (config) => {
-    exports.testOnly = {}
+    let result = {}
 
-    exports.installWebhook = function (app, path, webhookVerificationToken, engine, scheduler) {
+    result.installWebhook = function (app, path, webhookVerificationToken, engine, scheduler) {
         scheduler.registerMessenger(
             TelegramApi.messenger,
             async (userId, payload) => {
@@ -29,33 +30,12 @@ module.exports = (config) => {
 
     let mailer = MailgunMailer(config)
 
-    function createContext(chat_id, scheduler) {
+    function createContext(chat_id) {
         return {
             sender: new TelegramSender(chat_id),
             messengerApi: TelegramApi,
-            chat_id: chat_id,
-            messageBuilder: MessageBuilder,
-            mailer: {
-                sendEmail: async (emailTo, subject, body) => {
-                    console.log("Sending email to " + emailTo.join())
-                    try {
-                        let r = await mailer.sendEmail(emailTo, subject, body)
-                        if (r.error) {
-                            console.error(r.error)
-                        } else {
-                            console.log("Email sent: " + JSON.stringify(r.info))
-                            return true
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-            },
-            scheduler: {
-                schedule: async (timeSlice, trigger, payload) => {
-                    await scheduler.schedule(TelegramApi.messenger, userId, timeSlice, trigger, payload)
-                }
-            }
+            userId: chat_id,
+            messageBuilder: MessageBuilder
         }
     }
 
@@ -72,7 +52,7 @@ module.exports = (config) => {
 
     }
 
-    exports.testOnly.handleRequest = handleRequest
+    result.testOnly.handleRequest = handleRequest
 
     function parsePayload(payloadString) {
         let payload = JSON.parse(payloadString)
@@ -164,7 +144,7 @@ module.exports = (config) => {
             return senderAction(typing_off_str)
         }
     }
-    exports.testOnly.MessageBuilder = MessageBuilder
+    result.testOnly.MessageBuilder = MessageBuilder
 
     function sendMessengerProfileRequest(json, callback) {
         telegramPost("https://graph.facebook.com/v2.6/me/messenger_profile", json, callback)
@@ -299,5 +279,5 @@ module.exports = (config) => {
         }
     }
 
-    return exports
+    return result
 }
