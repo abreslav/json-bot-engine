@@ -124,13 +124,6 @@ module.exports = (config) => {
         //         }
         //     })
         // },
-
-        typingOn: () => {
-            return message({text: "Typing..."})
-        },
-        typingOff: () => {
-            return senderAction(typing_off_str)
-        }
     }
     result.testOnly.MessageBuilder = MessageBuilder
 
