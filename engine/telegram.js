@@ -200,33 +200,5 @@ module.exports = (config) => {
             goto: goto
         }, extra))
     }
-
-    function toTelegramButton(button) {
-        function postbackButton(title, goto) {
-            return {
-                type: "postback",
-                title: title,
-                payload: toPostbackPayload(goto)
-            }
-        }
-
-        function webUrlButton(title, url, heightRatio = "full") {
-            return {
-                type: "web_url",
-                title: title,
-                url: url,
-                webview_height_ratio: heightRatio
-            }
-        }
-
-        if (button.goto) {
-            return postbackButton(button.title, button.goto)
-        } else if (button.web_url) {
-            return webUrlButton(button.title, button.web_url)
-        }
-
-        throw new Error("Button not supported: " + JSON.stringify(button))
-    }
-
     return result
 }
