@@ -13,7 +13,7 @@ module.exports = (config) => {
         scheduler.registerMessenger(
             FBMessengerApi.messenger,
             async (userId, payload) => {
-                await engine.runScheduledTask(createContext(userId, scheduler), payload)
+                await engine.runScheduledTask(createContext(userId), payload)
             }
         )
         app.get(path, function (req, res) {
@@ -25,7 +25,7 @@ module.exports = (config) => {
         })
 
         app.post(path, function (req, res) {
-            handleRequest(req, engine, scheduler)
+            handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
 
@@ -47,7 +47,7 @@ module.exports = (config) => {
         }
     }
 
-    async function handleRequest(req, engine, scheduler, context = createContext) {
+    async function handleRequest(req, engine, context = createContext) {
         let messaging_events = req.body.entry[0].messaging
         for (let i = 0; i < messaging_events.length; i++) {
             let event = req.body.entry[0].messaging[i]
@@ -64,7 +64,7 @@ module.exports = (config) => {
                 continue
             }
             let operatorMessage = event.sender.id === config.facebook.page_id
-            let c = context(operatorMessage ? event.recipient.id : event.sender.id, scheduler)
+            let c = context(operatorMessage ? event.recipient.id : event.sender.id)
             if (event.message && event.message.is_echo) {
                 if (config.facebook.log_echos) {
                     console.log("ECHO MESSAGE: " + JSON.stringify(event))

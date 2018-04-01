@@ -4,8 +4,6 @@ const request = require('request')
 const extend = require('extend')
 
 const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
-const MailgunMailer = require('./mailgun-mailer')
-const LoggingMailer = require('./logginig-mailer')
 
 module.exports = (config) => {
     let result = {}
@@ -14,12 +12,12 @@ module.exports = (config) => {
         scheduler.registerMessenger(
             TelegramApi.messenger,
             async (userId, payload) => {
-                await engine.runScheduledTask(createContext(userId, scheduler), payload)
+                await engine.runScheduledTask(createContext(userId), payload)
             }
         )
 
         app.post(path, function (req, res) {
-            handleRequest(req, engine, scheduler)
+            handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
 
@@ -27,8 +25,6 @@ module.exports = (config) => {
 
         // Set up the "Get Started" button
     }
-
-    let mailer = MailgunMailer(config)
 
     function createContext(chat_id) {
         return {
@@ -39,10 +35,10 @@ module.exports = (config) => {
         }
     }
 
-    async function handleRequest(req, engine, scheduler, context = createContext) {
+    async function handleRequest(req, engine, context = createContext) {
         const {message} = req.body;
         const {callback_query} = req.body;
-        let c = context(message.chat.id, scheduler)
+        let c = context(message.chat.id)
         if (message && message.text) {
             let text = message.text
             await engine.textMessageReceived(c, text)

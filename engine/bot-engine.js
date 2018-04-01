@@ -442,7 +442,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 )
             )
         } else if (instr.schedule) {
-            await ec.c.scheduler.schedule(
+            await appContext.scheduler.schedule(
                 instr.schedule,
                 instr.trigger || "no_trigger",
                 { goto: instr.goto }
