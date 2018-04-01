@@ -71,9 +71,6 @@ module.exports = (config) => {
             extend(json, load, {chat_id: chat_id})
             await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendMessage", json)
         }
-        this.sendDebugMessage = async (text) => {
-            await this.sendMessage(MessageBuilder.text(text))
-        }
         this.fetchUserVariables = async () => {
             let response = await telegramPost(
                 "https://api.telegram.org/bot" + config.telegram.bot_token + "/getChatMember")
@@ -90,11 +87,6 @@ module.exports = (config) => {
                 result[PredefinedVariables.is_bot] = fetched.is_bot
                 return result
             }
-        }
-        this.deleteMessage = async function (message_id) {
-            let json = {}
-            extend(json, {chat_id: chat_id}, {message_id: message_id})
-            await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/deleteMessage", json)
         }
     }
 
@@ -142,10 +134,6 @@ module.exports = (config) => {
     }
     result.testOnly.MessageBuilder = MessageBuilder
 
-    function sendMessengerProfileRequest(json, callback) {
-        telegramPost("https://graph.facebook.com/v2.6/me/messenger_profile", json, callback)
-    }
-
     function inlineKeybordFromButtons(buttons) {
         return {
             inline_keyboard: [buttons.map(it => createInlineButton(it["title"], it["goto"]))]
@@ -179,16 +167,6 @@ module.exports = (config) => {
         };
         return await telegramRequest(jsonRequest);
     }
-
-    async function telegramGet(url, params) {
-        let jsonRequest = {
-            url: url,
-            qs: Object.assign(params),
-            method: 'GET'
-        };
-        return await telegramRequest(jsonRequest);
-    }
-
     function telegramRequest(jsonRequest) {
         return new Promise(resolve => {
             request(
@@ -215,7 +193,6 @@ module.exports = (config) => {
             )
         })
     }
-
 
     function message(chat_id, text, paramsJSON) {
         return extend({chat_id: chat_id}, {text: text}, paramsJSON)
@@ -252,27 +229,6 @@ module.exports = (config) => {
         }
 
         throw new Error("Button not supported: " + JSON.stringify(button))
-    }
-
-    function toFBQuickReply(button) {
-        let result = {
-            content_type: "text",
-            title: button.title,
-            payload: toPostbackPayload(button.goto)
-        }
-        if (button.image_url) {
-            result.image_url = button.image_url
-        }
-        return result
-    }
-
-    function toFBGalleryElement(element) {
-        return {
-            title: element.title,
-            subtitle: element.subtitle,
-            image_url: element.image_url,
-            buttons: element.buttons.map(toTelegramButton),
-        }
     }
 
     return result
