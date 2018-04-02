@@ -43,8 +43,12 @@ module.exports = (config) => {
             let text = message.text
             await engine.textMessageReceived(c, text)
         } else if (callback_query) {
-
+            const payload = parsePayload(callback_query)
+            await engine.buttonPressed(c, payload)
+        } else if(message && !message.text){
+            console.log("Unrecoginzed message received: ", message)
         }
+
 
     }
 
