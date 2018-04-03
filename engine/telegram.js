@@ -8,7 +8,7 @@ const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
 module.exports = (config) => {
     let result = {}
 
-    result.installWebhook = function (app, path, webhookVerificationToken, engine, scheduler) {
+    result.installWebhook = function (app, path, engine, scheduler) {
         scheduler.registerMessenger(
             TelegramApi.messenger,
             async (userId, payload) => {
