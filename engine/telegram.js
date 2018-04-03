@@ -7,6 +7,7 @@ const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
 
 module.exports = (config) => {
     let result = {}
+    result.testOnly = {}
 
     result.installWebhook = function (app, path, engine, scheduler) {
         scheduler.registerMessenger(
