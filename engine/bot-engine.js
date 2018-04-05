@@ -442,6 +442,8 @@ function ExecutionContext(c, userData, blocks, appContext) {
             )
         } else if (instr.schedule) {
             await appContext.scheduler.schedule(
+                appContext.messenger,
+                ec.c.userId,
                 instr.schedule,
                 instr.trigger || "no_trigger",
                 { goto: instr.goto }
