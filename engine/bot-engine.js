@@ -26,7 +26,6 @@ const PredefinedVariables = {
     url_ref_tag: "${url_ref_tag}",
     timezone: "${timezone}",
     timestamp: "${timestamp}",
-    is_bot: "${is_bot}",
     username: "${username}"
 }
 

@@ -89,7 +89,6 @@ module.exports = (config) => {
                 result[PredefinedVariables.user_last_name] = fetched.last_name
                 result[PredefinedVariables.locale] = fetched.language_code
                 result[PredefinedVariables.username] = fetched.username
-                result[PredefinedVariables.is_bot] = fetched.is_bot
                 return result
             }
         }
