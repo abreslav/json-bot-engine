@@ -18,6 +18,7 @@ module.exports = (config) => {
         )
 
         app.post(path, function (req, res) {
+            console.log('Post request accepted to path : ' + path)
             handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
@@ -37,16 +38,19 @@ module.exports = (config) => {
     }
 
     async function handleRequest(req, engine, context = createContext) {
+        console.log('Start handle request.');
         const {message} = req.body;
         const {callback_query} = req.body;
         let c = context(message.chat.id)
         if (message && message.text) {
+            console.log('Message received: ' + message.text);
             let text = message.text
             await engine.textMessageReceived(c, text)
         } else if (callback_query) {
+            console.log('Callback query received: ' + callback_query);
             const payload = parsePayload(callback_query)
             await engine.buttonPressed(c, payload)
-        } else if(message && !message.text){
+        } else if (message && !message.text) {
             console.log("Unrecoginzed message received: ", message)
         }
 
