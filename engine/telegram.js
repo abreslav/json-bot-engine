@@ -23,6 +23,12 @@ module.exports = (config) => {
                 .then(() => res.sendStatus(200))
         })
 
+        app.get(path, function (req, res) {
+            console.log('Post request accepted to path : ' + path)
+            handleRequest(req, engine)
+                .then(() => res.sendStatus(200))
+        })
+
         engine.initEngine(TelegramApi)
 
         // Set up the "Get Started" button
