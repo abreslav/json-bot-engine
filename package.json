@@ -1,14 +1,27 @@
 {
-  "name": "alter_bot",
-  "version": "1.0.0",
-  "description": "Chatbot for psyalter.com",
-  "repository": "gitlab.com:abreslav/alter-bot.git",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "json-bot-engine",
+  "version": "0.2.0",
+  "description": "Chatbot Framework based on JSON specifications",
+  "repository": "github/abreslav/json-bot-engine",
+  "homepage": "https://github.com/abreslav/json-bot-engine",
+  "bugs": {
+    "url": "https://github.com/abreslav/json-bot-engine/issues"
   },
-  "author": "",
-  "license": "ISC",
+  "main": "main.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Andrey Breslav",
+    "url": "https://github.com/abreslav"
+  },
+  "license": "Apache-2.0",
+  "directories": {
+    "test": "test",
+    "example": "sample-app",
+    "lib": "engine"
+  },
   "dependencies": {
     "array-shuffle": "^1.0.1",
     "body-parser": "^1.18.2",
@@ -18,8 +31,6 @@
     "mongodb": "^3.0.1",
     "node-rest-client": "^3.1.0",
     "nodemailer": "^4.4.1",
-    "pug": "^2.0.0-rc.4",
-    "request": "^2.83.0",
-    "yamljs": "^0.3.0"
+    "request": "^2.83.0"
   }
 }
