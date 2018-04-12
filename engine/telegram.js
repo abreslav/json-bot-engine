@@ -9,7 +9,7 @@ module.exports = (config) => {
     let result = {}
     result.testOnly = {}
 
-    result.installWebhook = function (app, host, engine, scheduler) {
+    result.installWebhook = function (app, host, path, engine, scheduler) {
         scheduler.registerMessenger(
             TelegramApi.messenger,
             async (userId, payload) => {
@@ -17,15 +17,15 @@ module.exports = (config) => {
             }
         )
 
-        telegramSetWebhook()
+        let webhookResponse = telegramSetWebhook()
 
-        app.post(config.telegram.webhook_path, function (req, res) {
+        app.post(path, function (req, res) {
             console.log('Post request accepted to host : ' + host)
             handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
 
-        app.get(config.telegram.webhook_path, function (req, res) {
+        app.get(path, function (req, res) {
             console.log('Post request accepted to host : ' + host)
             handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
