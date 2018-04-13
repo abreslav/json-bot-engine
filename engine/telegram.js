@@ -89,18 +89,20 @@ module.exports = (config) => {
             await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendMessage", json)
         }
         this.fetchUserVariables = async () => {
+            let json = {}
+            extend(json, {chat_id: chat_id}, {user_id: chat_id})
             let response = await telegramPost(
-                "https://api.telegram.org/bot" + config.telegram.bot_token + "/getChatMember")
+                "https://api.telegram.org/bot" + config.telegram.bot_token + "/getChatMember", json)
             if (response && !response.body.error) {
-                let fetched = JSON.parse(response.body)
+                let fetched = response.body.result
                 const user = fetched.user
                 let result = {}
                 result[PredefinedVariables.server_base_url] = config.http.base_url
                 result[PredefinedVariables.messenger_user_id] = user.id
-                result[PredefinedVariables.user_first_name] = fetched.first_name
-                result[PredefinedVariables.user_last_name] = fetched.last_name
-                result[PredefinedVariables.locale] = fetched.language_code
-                result[PredefinedVariables.username] = fetched.username
+                result[PredefinedVariables.user_first_name] = user.first_name
+                result[PredefinedVariables.user_last_name] = user.last_name
+                result[PredefinedVariables.locale] = user.language_code
+                result[PredefinedVariables.username] = user.username
                 return result
             }
         }
