@@ -52,10 +52,11 @@ function MongoStorage(db) {
     }
 
     // callback: (userData, newUser)
-    function createUser(id, callback) {
+    function createUser(id, messenger, callback) {
         db.collection(Collections.USERS).insertOne(
             {
                 _id: id,
+                messenger: messenger,
                 stack: [],
                 variables: {}
             },
@@ -69,9 +70,12 @@ function MongoStorage(db) {
     }
 
     // callback: (userData, newUser)
-    this.getUserDataById = (id, callback) => {
+    this.getUserDataById = (id, messenger, callback) => {
         db.collection(Collections.USERS).find(
-            {_id: id}
+            {
+                _id: id,
+                messenger: messenger
+            }
         ).toArray(
             (err, result) => {
                 if (err) throw err
@@ -80,7 +84,7 @@ function MongoStorage(db) {
                     userData.variables = escapeNames(userData.variables)
                     callback(userData, false)
                 } else if (result.length === 0) {
-                    createUser(id, callback)
+                    createUser(id, messenger, callback)
                 } else {
                     throw new Error("Many documents by the same ID: " + id + ": " + result.join(", "))
                 }
@@ -90,7 +94,7 @@ function MongoStorage(db) {
 
     this.saveUserData = (id, stack, variables, globalInputHandlers, callback) => {
         db.collection(Collections.USERS).updateOne(
-            { _id: id },
+            {_id: id},
             {
                 $set: {
                     stack: stack,
@@ -164,8 +168,8 @@ function MongoStorage(db) {
 
     this.testOnly.getMessageLog = async (userId) => {
         return await db.collection(Collections.MESSAGE_LOG).find(
-            { user_id: userId }
-        ).sort({ _id: 1 }).toArray()
+            {user_id: userId}
+        ).sort({_id: 1}).toArray()
     }
 }
 

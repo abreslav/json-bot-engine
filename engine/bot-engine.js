@@ -26,7 +26,8 @@ const PredefinedVariables = {
     url_ref_tag: "${url_ref_tag}",
     timezone: "${timezone}",
     timestamp: "${timestamp}",
-    username: "${username}"
+    username: "${username}",
+    messenger: "${messenger}"
 }
 
 const BotStates = {
@@ -155,7 +156,7 @@ let BotEngine = function(blocks, appContext) {
 
     async function fetchUserContext(c) {
         return await new Promise((resolve) => {
-            appContext.storage.getUserDataById(c.userId, (userData, newUser) => {
+            appContext.storage.getUserDataById(c.userId, c.messengerApi.messenger, (userData, newUser) => {
                 let ec = new ExecutionContext(c, userData, blocks, appContext)
                 initUserContext(ec).then(() => resolve(ec))
             })
