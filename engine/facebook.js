@@ -3,13 +3,14 @@
 const request = require('request')
 const extend = require('extend')
 
-const { PredefinedBlocks, PredefinedVariables } = require("./bot-engine")
+const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
+const promiseUtils = require('./promise-utils')
 
 module.exports = (config) => {
     let result = {}
     result.testOnly = {}
 
-    result.installWebhook = function(app, path, webhookVerificationToken, engine, scheduler) {
+    result.installWebhook = function (app, path, webhookVerificationToken, engine, scheduler) {
         scheduler.registerMessenger(
             FBMessengerApi.messenger,
             async (userId, payload) => {
@@ -33,11 +34,14 @@ module.exports = (config) => {
 
         // Set up the "Get Started" button
         sendMessengerProfileRequest(
-            { "get_started": {
+            {
+                "get_started": {
                     "payload": toPostbackPayload(PredefinedBlocks.ON_START, {get_started: true})
-                }}
+                }
+            }
         )
     }
+
     function createContext(userId) {
         return {
             sender: new FBSender(userId),
@@ -102,12 +106,13 @@ module.exports = (config) => {
             }
         }
     }
+
     result.testOnly.handleRequest = handleRequest
 
     function parsePayload(payloadString) {
         let payload = JSON.parse(payloadString)
         if (Array.isArray(payload.blocks)) {
-            return { "goto": payload.blocks[0] }
+            return {"goto": payload.blocks[0]}
         }
         return payload
     }
@@ -126,7 +131,7 @@ module.exports = (config) => {
         }
     }
 
-    const FBSender = function(userId) {
+    const FBSender = function (userId) {
         this.sendMessage = async function (load) {
             let json = {}
             extend(json, load, {recipient: {id: userId}, messaging_type: "RESPONSE"})
@@ -156,7 +161,7 @@ module.exports = (config) => {
 
     const MessageBuilder = {
         text: (text) => {
-            return message({text:text})
+            return message({text: text})
         },
         image_url: (image_url) => {
             console.log("TODO: images are not yet supported" + image_url)
@@ -193,9 +198,15 @@ module.exports = (config) => {
             })
         },
 
-        typingOn: () => { return senderAction(typing_on_str) },
-        typingOff: () => { return senderAction(typing_off_str) },
-        markSeen: () => { return senderAction(mark_seen_str) },
+        typingOn: () => {
+            return senderAction(typing_on_str)
+        },
+        typingOff: () => {
+            return senderAction(typing_off_str)
+        },
+        markSeen: () => {
+            return senderAction(mark_seen_str)
+        },
     }
     result.testOnly.MessageBuilder = MessageBuilder
 
@@ -210,7 +221,7 @@ module.exports = (config) => {
             method: 'POST',
             json: json
         };
-        return await fbRequest(jsonRequest);
+        return await promiseUtils.doRequest(jsonRequest);
     }
 
     async function fbGet(url, params) {
@@ -222,35 +233,9 @@ module.exports = (config) => {
             ),
             method: 'GET'
         };
-        return await fbRequest(jsonRequest);
+        return await promiseUtils.doRequest(jsonRequest);
     }
 
-    function fbRequest(jsonRequest) {
-        return new Promise(resolve => {
-            request(
-                jsonRequest,
-                function (error, response, body) {
-                    if (error) {
-                        console.error(`Error sending: ${JSON.stringify(jsonRequest, 1)}:`)
-                        console.error("Error: ", error)
-                    } else if (response.body.error) {
-                        console.log('Error: ', response.body.error)
-                        console.log("Request: ", JSON.stringify(jsonRequest))
-                    } else {
-                        if (config.logging.log_http_requests) {
-                            console.log(`Successfully sent: ${JSON.stringify(jsonRequest, 1)}`)
-                            if (typeof response.body === 'string') {
-                                console.log("Response: ", response.body)
-                            } else {
-                                console.log("Response: ", JSON.stringify(response.body, 1))
-                            }
-                        }
-                    }
-                    resolve(response)
-                }
-            )
-        })
-    }
 
     const typing_on_str = "typing_on"
     const typing_off_str = "typing_off"

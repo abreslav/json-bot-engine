@@ -4,6 +4,7 @@ const request = require('request')
 const extend = require('extend')
 
 const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
+const promiseUtils = require('./promise-utils')
 
 module.exports = (config) => {
     let result = {}
@@ -20,13 +21,11 @@ module.exports = (config) => {
         let webhookResponse = telegramSetWebhook()
 
         app.post(path, function (req, res) {
-            console.log('Post request accepted to host : ' + host)
             handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
 
         app.get(path, function (req, res) {
-            console.log('Post request accepted to host : ' + host)
             handleRequest(req, engine)
                 .then(() => res.sendStatus(200))
         })
@@ -46,7 +45,6 @@ module.exports = (config) => {
     }
 
     async function handleRequest(req, engine, context = createContext) {
-        console.log('Start handle request.');
         const {message} = req.body;
         const {callback_query} = req.body;
         let c = context(message.chat.id)
@@ -178,35 +176,10 @@ module.exports = (config) => {
             method: 'POST',
             json: json
         };
-        return await telegramRequest(jsonRequest);
+        return await promiseUtils.doRequest(jsonRequest);
     }
 
-    function telegramRequest(jsonRequest) {
-        return new Promise(resolve => {
-            request(
-                jsonRequest,
-                function (error, response) {
-                    if (error) {
-                        console.error(`Error sending: ${JSON.stringify(jsonRequest, 1)}:`)
-                        console.error("Error: ", error)
-                    } else if (response.body.error) {
-                        console.log('Error: ', response.body.error)
-                        console.log("Request: ", JSON.stringify(jsonRequest))
-                    } else {
-                        if (config.logging.log_http_requests) {
-                            console.log(`Successfully sent: ${JSON.stringify(jsonRequest, 1)}`)
-                            if (typeof response.body === 'string') {
-                                console.log("Response: ", response.body)
-                            } else {
-                                console.log("Response: ", JSON.stringify(response.body, 1))
-                            }
-                        }
-                    }
-                    resolve(response)
-                }
-            )
-        })
-    }
+
 
     function message(chat_id, text, paramsJSON) {
         return extend({chat_id: chat_id}, {text: text}, paramsJSON)
