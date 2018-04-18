@@ -12,6 +12,7 @@ const mailer = require('../engine/mailgun-mailer')(config)
 const Scheduler = require('../engine/scheduler')(config)
 
 const fb = require('../engine/facebook')(config)
+const tg = require('../engine/telegram')(config)
 
 const app = express()
 
@@ -54,6 +55,7 @@ mongoStorage.connect(
 
         scheduler.install(app)
         fb.installWebhook(app, config.facebook.webhook_path, config.facebook.webhook_verification_token, botEngine, scheduler)
+        tg.installWebhook(app, config.telegram.webhook_host, config.telegram.webhook_path, botEngine, scheduler)
 
         // Spin up the server
         server = app.listen(config.http.port, function () {

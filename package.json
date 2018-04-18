@@ -5,7 +5,7 @@
   "repository": "gitlab.com:abreslav/alter-bot.git",
   "main": "index.js",
   "scripts": {
-    "start": "node --inspect=0.0.0.0:9229 --inspect-brk sample-app/telegram-app.js",
+    "start": "node --inspect=0.0.0.0:9229 --inspect-brk sample-app/index.js",
     "test": "node test/test_fb.js"
   },
   "author": "",
