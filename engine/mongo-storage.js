@@ -12,7 +12,8 @@ module.exports = (config) => {
                 if (err) throw err;
                 console.log("MongoClient connected correctly to ", config.mongodb.url.replace(/^(mongodb:\/\/[^:]+:)([^@]*)@/, "$1***@"))
 
-                let storage = new MongoStorage(mongoClient.db(config.mongodb.db));
+                let storage = new MongoStorage(mongoClient.db(config.mongodb.db))
+                console.log("Using db: " + config.mongodb.db)
 
                 let startedPromise = start(storage)
 
