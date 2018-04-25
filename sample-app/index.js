@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 
 // Index route
 app.get('/', function (req, res) {
-	res.send('Status: running')
+	res.send(req.query['hub.challenge'])
 })
 
 let server = undefined
