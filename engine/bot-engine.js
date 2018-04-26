@@ -396,6 +396,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     async function executeInstruction(ec, instr) {
         let mb = ec.c.messageBuilder
         instr = substituteObject(instr)
+        ec.assignVariable(PredefinedVariables.current_block, getTopFrame().block_id)
         if (typeof instr.text !== 'undefined') {
             if (instr.buttons) {
                 await sendMessageAndLog(mb.textWithButtons(instr.text, instr.buttons));
