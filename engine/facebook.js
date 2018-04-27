@@ -1,10 +1,9 @@
 'use strict'
 
-const request = require('request')
 const extend = require('extend')
 
 const {PredefinedBlocks, PredefinedVariables} = require("./bot-engine")
-const promiseUtils = require('./promise-utils')
+const requestUtils = require('./request-handling-utils')
 
 module.exports = (config) => {
     let result = {}
@@ -221,7 +220,7 @@ module.exports = (config) => {
             method: 'POST',
             json: json
         };
-        return await promiseUtils.doRequest(jsonRequest);
+        return await requestUtils.doRequest(jsonRequest, config);
     }
 
     async function fbGet(url, params) {
@@ -233,7 +232,7 @@ module.exports = (config) => {
             ),
             method: 'GET'
         };
-        return await promiseUtils.doRequest(jsonRequest);
+        return await requestUtils.doRequest(jsonRequest, config);
     }
 
 
