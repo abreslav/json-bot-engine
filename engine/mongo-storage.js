@@ -69,6 +69,14 @@ function MongoStorage(db) {
         )
     }
 
+    this.createIndex = () => {
+        db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true })
+    }
+
+    this.clean = () => {
+        db.collection(Collections.USERS).deleteMany({})
+    }
+
     // callback: (userData, newUser)
     this.getUserDataById = (id, messenger, callback) => {
         db.collection(Collections.USERS).find(
@@ -92,9 +100,12 @@ function MongoStorage(db) {
         )
     }
 
-    this.saveUserData = (id, stack, variables, globalInputHandlers, callback) => {
+    this.saveUserData = (id, messenger, stack, variables, globalInputHandlers, callback) => {
         db.collection(Collections.USERS).updateOne(
-            {_id: id},
+            {
+                _id: id,
+                messenger: messenger
+            },
             {
                 $set: {
                     stack: stack,

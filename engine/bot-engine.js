@@ -315,7 +315,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     }
 
     async function saveToDB() {
-        await toPromise((c) => appContext.storage.saveUserData(userData._id, stack, variables, globalInputHandlers, c))
+        await toPromise((c) => appContext.storage.saveUserData(userData._id, c.messengerApi.messenger, stack, variables, globalInputHandlers, c))
     }
 
     function initFrame(blockId) {
