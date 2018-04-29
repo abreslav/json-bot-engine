@@ -58,7 +58,6 @@ mongoStorage.connect(
         fb.installWebhook(app, config.facebook.webhook_path, config.facebook.webhook_verification_token, botEngine, scheduler)
         tg.installWebhook(app, config.telegram.webhook_host, config.telegram.webhook_path, botEngine, scheduler)
         storage.createIndex()
-        storage.clean()
         // Spin up the server
         server = app.listen(config.http.port, function () {
             console.log('Express.js running on port', config.http.port)

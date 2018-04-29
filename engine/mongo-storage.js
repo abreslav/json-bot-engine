@@ -73,16 +73,12 @@ function MongoStorage(db) {
         db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true })
     }
 
-    this.clean = () => {
-        db.collection(Collections.USERS).deleteMany({})
-    }
-
     // callback: (userData, newUser)
-    this.getUserDataById = (id, messenger, callback) => {
+    this.getUserDataById = (c, callback) => {
         db.collection(Collections.USERS).find(
             {
-                _id: id,
-                messenger: messenger
+                _id: c.userId,
+                messenger:  c.messengerApi.messenger
             }
         ).toArray(
             (err, result) => {
@@ -92,7 +88,7 @@ function MongoStorage(db) {
                     userData.variables = escapeNames(userData.variables)
                     callback(userData, false)
                 } else if (result.length === 0) {
-                    createUser(id, messenger, callback)
+                    createUser(c.userId, c.messengerApi.messenger, callback)
                 } else {
                     throw new Error("Many documents by the same ID: " + id + ": " + result.join(", "))
                 }
@@ -100,11 +96,11 @@ function MongoStorage(db) {
         )
     }
 
-    this.saveUserData = (id, messenger, stack, variables, globalInputHandlers, callback) => {
+    this.saveUserData = (userData, stack, variables, globalInputHandlers, callback) => {
         db.collection(Collections.USERS).updateOne(
             {
-                _id: id,
-                messenger: messenger
+                _id: userData.id,
+                messenger: userData.messenger
             },
             {
                 $set: {

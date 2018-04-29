@@ -156,7 +156,7 @@ let BotEngine = function(blocks, appContext) {
 
     async function fetchUserContext(c) {
         return await new Promise((resolve) => {
-            appContext.storage.getUserDataById(c.userId, c.messengerApi.messenger, (userData, newUser) => {
+            appContext.storage.getUserDataById(c, (userData, newUser) => {
                 let ec = new ExecutionContext(c, userData, blocks, appContext)
                 initUserContext(ec).then(() => resolve(ec))
             })
@@ -315,7 +315,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     }
 
     async function saveToDB() {
-        await toPromise((c) => appContext.storage.saveUserData(userData._id, c.messengerApi.messenger, stack, variables, globalInputHandlers, c))
+        await toPromise((c) => appContext.storage.saveUserData(userData, stack, variables, globalInputHandlers, c))
     }
 
     function initFrame(blockId) {
