@@ -75,10 +75,12 @@ function MongoStorage(db) {
 
     // callback: (userData, newUser)
     this.getUserDataById = (c, callback) => {
+        const userId = c.userId;
+        const messenger = c.messengerApi.messenger;
         db.collection(Collections.USERS).find(
             {
-                _id: c.userId,
-                messenger:  c.messengerApi.messenger
+                _id: userId,
+                messenger:  messenger
             }
         ).toArray(
             (err, result) => {
@@ -88,9 +90,9 @@ function MongoStorage(db) {
                     userData.variables = escapeNames(userData.variables)
                     callback(userData, false)
                 } else if (result.length === 0) {
-                    createUser(c.userId, c.messengerApi.messenger, callback)
+                    createUser(userId, messenger, callback)
                 } else {
-                    throw new Error("Many documents by the same ID: " + id + ": " + result.join(", "))
+                    throw new Error("Many documents by the same ID: " + userId + ": " + result.join(", "))
                 }
             }
         )
