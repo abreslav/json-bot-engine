@@ -46,12 +46,9 @@ module.exports = (config) => {
     async function handleRequest(req, engine, context = createContext) {
         const {message} = req.body;
         const {callback_query} = req.body;
-        const {edited_message} = req.body
         let c
         if (message) {
             c = context(message.chat.id)
-        } else if (edited_message) {
-            c = context(edited_message.chat.id)
         } else if(callback_query){
             c = context(callback_query.from.id)
         }
@@ -61,7 +58,7 @@ module.exports = (config) => {
             await engine.textMessageReceived(c, text)
         } else if (callback_query) {
             console.log('Callback query received: ' + callback_query);
-            const payload = callback_query.data
+            const payload = parsePayload(callback_query)
             await engine.buttonPressed(c, payload)
         } else if (message && !message.text) {
             console.log("Unrecoginzed message received: ", message)
@@ -169,11 +166,6 @@ module.exports = (config) => {
                 }
             })]
         }
-    }
-
-    function galleryKeyboard() {
-        return replyKeybordFromButtons()
-
     }
 
     async function telegramSetWebhook() {
