@@ -46,7 +46,13 @@ module.exports = (config) => {
     async function handleRequest(req, engine, context = createContext) {
         const {message} = req.body;
         const {callback_query} = req.body;
-        let c = context(message.chat.id)
+        const {edited_message} = req.body
+        let c
+        if (message) {
+            c = context(message.chat.id)
+        } else if (edited_message) {
+            c = context(edited_message.chat.id)
+        }
         if (message && message.text) {
             console.log('Message received: ' + message.text);
             let text = message.text
@@ -127,18 +133,18 @@ module.exports = (config) => {
                 quick_replies: replyKeybordFromButtons(buttons)
             }
         },
-        // gallery: (items, image_aspect_ratio = "square") => {
-        //     return message({
-        //         attachment: {
-        //             type: "template",
-        //             payload: {
-        //                 template_type: "generic",
-        //                 image_aspect_ratio: image_aspect_ratio || "square",
-        //                 elements: items.map(toFBGalleryElement)
-        //             }
-        //         }
-        //     })
-        // },
+        gallery: (items, image_aspect_ratio = "square") => {
+            return message({
+                attachment: {
+                    type: "template",
+                    payload: {
+                        template_type: "generic",
+                        image_aspect_ratio: image_aspect_ratio || "square",
+                        elements: items.map(toFBGalleryElement)
+                    }
+                }
+            })
+        }
     }
     result.testOnly.MessageBuilder = MessageBuilder
 
@@ -161,6 +167,11 @@ module.exports = (config) => {
                 }
             })]
         }
+    }
+
+    function galleryKeyboard() {
+        return replyKeybordFromButtons()
+
     }
 
     async function telegramSetWebhook() {
