@@ -486,7 +486,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 }
             }
             if (_else) {
-                goto(_else.goto)
+                goto(_else.else[0].goto)
             }
         } else if (instr.event) {
             let event = {
