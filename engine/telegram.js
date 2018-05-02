@@ -52,6 +52,8 @@ module.exports = (config) => {
             c = context(message.chat.id)
         } else if (edited_message) {
             c = context(edited_message.chat.id)
+        } else if(callback_query){
+            c = context(callback_query.from.id)
         }
         if (message && message.text) {
             console.log('Message received: ' + message.text);
