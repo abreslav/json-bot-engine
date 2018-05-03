@@ -123,13 +123,13 @@ module.exports = (config) => {
         textWithButtons: (text, buttons) => {
             return {
                 text: text,
-                reply_markup: inlineKeybordFromButtons(buttons)
+                reply_markup: inlineKeyboardFromButtons(buttons)
             }
         },
         textWithQuickReplies: (text, buttons) => {
             return {
                 text: text,
-                reply_markup: replyKeybordFromButtons(buttons)
+                reply_markup: replyKeyboardFromButtons(buttons)
             }
         },
         gallery: (items, image_aspect_ratio = "square") => {
@@ -147,7 +147,7 @@ module.exports = (config) => {
     }
     result.testOnly.MessageBuilder = MessageBuilder
 
-    function inlineKeybordFromButtons(buttons) {
+    function inlineKeyboardFromButtons(buttons) {
         return {
             inline_keyboard: [buttons.map(it => {
                 return {
@@ -158,7 +158,7 @@ module.exports = (config) => {
         }
     }
 
-    function replyKeybordFromButtons(buttons) {
+    function replyKeyboardFromButtons(buttons) {
         return {
             keyboard: [buttons.map(it => {
                 return {
