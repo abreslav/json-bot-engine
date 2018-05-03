@@ -129,7 +129,7 @@ module.exports = (config) => {
         textWithQuickReplies: (text, buttons) => {
             return {
                 text: text,
-                quick_replies: replyKeybordFromButtons(buttons)
+                reply_markup: replyKeybordFromButtons(buttons)
             }
         },
         gallery: (items, image_aspect_ratio = "square") => {
