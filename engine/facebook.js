@@ -9,8 +9,8 @@ module.exports = (config) => {
     let result = {}
     result.testOnly = {}
 
-    result.installWebhook = function (app, path, webhookVerificationToken, engine, scheduler) {
-        scheduler.registerMessenger(
+    result.installWebhook = function (app, path, webhookVerificationToken, engine, appContext) {
+        appContext.scheduler.registerMessenger(
             FBMessengerApi.messenger,
             async (userId, payload) => {
                 await engine.runScheduledTask(createContext(userId), payload)
@@ -25,7 +25,7 @@ module.exports = (config) => {
         })
 
         app.post(path, function (req, res) {
-            handleRequest(req, engine)
+            handleRequest(req, engine, appContext)
                 .then(() => res.sendStatus(200))
         })
 
@@ -50,13 +50,13 @@ module.exports = (config) => {
         }
     }
 
-    async function handleRequest(req, engine, context = createContext) {
+    async function handleRequest(req, engine, appContext, context = createContext) {
         let messaging_events = req.body.entry[0].messaging
         for (let i = 0; i < messaging_events.length; i++) {
             let event = req.body.entry[0].messaging[i]
             if (event["policy-enforcement"]) {
                 console.error("POLICY ENFORCEMENT MESSAGE: ", JSON.stringify(event, null, 2))
-                let emailResult = await context().mailer.sendEmail(
+                let emailResult = await appContext.mailer.sendEmail(
                     [config.facebook.policy_enforcement_email],
                     "Alert: Policy enforcement message",
                     JSON.stringify(event, null, 2)

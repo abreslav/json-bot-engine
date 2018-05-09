@@ -9,8 +9,8 @@ module.exports = (config) => {
     let result = {}
     result.testOnly = {}
 
-    result.installWebhook = function (app, host, path, engine, scheduler) {
-        scheduler.registerMessenger(
+    result.installWebhook = function (app, host, path, engine, appContext) {
+        appContext.scheduler.registerMessenger(
             TelegramApi.messenger,
             async (userId, payload) => {
                 await engine.runScheduledTask(createContext(userId), payload)

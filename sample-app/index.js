@@ -55,8 +55,8 @@ mongoStorage.connect(
         let botEngine = new BotEngine(botDefinition, appContext)
 
         scheduler.install(app)
-        fb.installWebhook(app, config.facebook.webhook_path, config.facebook.webhook_verification_token, botEngine, scheduler)
-        tg.installWebhook(app, config.telegram.webhook_host, config.telegram.webhook_path, botEngine, scheduler)
+        fb.installWebhook(app, config.facebook.webhook_path, config.facebook.webhook_verification_token, botEngine, appContext)
+        tg.installWebhook(app, config.telegram.webhook_host, config.telegram.webhook_path, botEngine, appContext)
         storage.createIndex()
         // Spin up the server
         server = app.listen(config.http.port, function () {
