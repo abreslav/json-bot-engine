@@ -54,7 +54,7 @@ withTestEnvironment(
                         await fb.testOnly.handleRequest(
                             {body: command.request},
                             botEngine,
-                            scheduler,
+                            appContext,
                             createContext
                         )
                     }
@@ -79,7 +79,7 @@ withTestEnvironment(
                 await fb.testOnly.handleRequest(
                     {body: test.request},
                     botEngine,
-                    scheduler,
+                    appContext,
                     createContext
                 )
                 await checkMessages(messagesSent, test.expected_messages_sent)

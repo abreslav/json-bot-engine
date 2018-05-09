@@ -60,18 +60,7 @@ async function createBotEngine(storage, botDefinition) {
             messengerApi: messengerApi,
             userId: userId,
             messageBuilder: fb.testOnly.MessageBuilder,
-            mailer: {
-                sendEmail: async (emailTo, subject, body) => {
-                    messagesSent.messages.push({
-                        email_to: emailTo,
-                        subject: subject,
-                        body: body
-                    })
-                    return {
-                        info: "OK"
-                    }
-                }
-            }
+
         }
     }
     let scheduler = {
@@ -89,7 +78,19 @@ async function createBotEngine(storage, botDefinition) {
             }
         },
         scheduler: scheduler,
-        pluginManager: {}
+        pluginManager: {},
+        mailer: {
+            sendEmail: async (emailTo, subject, body) => {
+                messagesSent.messages.push({
+                    email_to: emailTo,
+                    subject: subject,
+                    body: body
+                })
+                return {
+                    info: "OK"
+                }
+            }
+        }
     }
 
     let botEngine = new BotEngine(botDefinition, appContext)
