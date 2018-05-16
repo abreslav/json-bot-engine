@@ -599,6 +599,10 @@ function ExecutionContext(c, userData, blocks, appContext) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
             if (button.user_input && button.goto) {
+                console.log("Collect input handlers: " + {
+                    user_input: button.user_input,
+                    goto: button.goto
+                })
                 return {
                     user_input: button.user_input,
                     goto: button.goto
