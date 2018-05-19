@@ -599,6 +599,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
             button.user_input = button.title
+            textInstr.text = button.user_input
             const result = {
                 user_input: button.user_input,
                 goto: button.goto
