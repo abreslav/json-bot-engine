@@ -598,14 +598,9 @@ function ExecutionContext(c, userData, blocks, appContext) {
     function collectInputHandlers(textInstr) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
-            button.user_input = button.title
-            const result = {
+            return {
                 user_input: button.user_input,
                 goto: button.goto
-            }
-            if (button.user_input && button.goto) {
-                console.log("Collect input handlers: " + JSON.stringify(result))
-                return result
             }
         }).filter((v) => v)
     }
