@@ -334,6 +334,8 @@ function ExecutionContext(c, userData, blocks, appContext) {
 
     function updateTopFrameState(fields) {
         let topFrame = getTopFrame()
+        console.log('Frame: ' + JSON.stringify(topFrame))
+        console.log('Fields: ' + JSON.stringify(fields))
         if (topFrame) {
             Object.assign(topFrame, fields)
         }
@@ -599,13 +601,9 @@ function ExecutionContext(c, userData, blocks, appContext) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
             button.user_input = button.title
-            const result = {
+            return {
                 user_input: button.user_input,
                 goto: button.goto
-            }
-            if (button.user_input && button.goto) {
-                console.log("Collect input handlers: " + JSON.stringify(result))
-                return result
             }
         }).filter((v) => v)
     }
