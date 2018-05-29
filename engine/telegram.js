@@ -49,7 +49,7 @@ module.exports = (config) => {
         let c
         if (message) {
             c = context(message.chat.id)
-        } else if (callback_query) {
+        } else if(callback_query){
             c = context(callback_query.from.id)
         }
         if (message && message.text) {
@@ -85,7 +85,12 @@ module.exports = (config) => {
     }
 
     const TelegramSender = function (chat_id) {
-        this.sendMessage = async function (pic_url, text) {
+        this.sendMessage = async function (load) {
+            let json = {}
+            extend(json, load, {chat_id: chat_id})
+            await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendMessage", json)
+        }
+        this.sendphoto= async function (pic_url, text){
             let json = {
                 chat_id: chat_id,
                 photo: pic_url,
@@ -93,11 +98,6 @@ module.exports = (config) => {
                 reply_markup: [[{text: "Подробнее"}],
                     [{text: "<"}, {text: "Контакты"}, {text: ">"}]]
             }
-            await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendMessage", json)
-        }
-        this.sendphoto = async function (load) {
-            let json = {}
-            extend(json, load, {chat_id: chat_id})
             await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendPhoto", json)
         }
         this.fetchUserVariables = async () => {
@@ -194,6 +194,7 @@ module.exports = (config) => {
     }
 
 
+
     function message(chat_id, text, paramsJSON) {
         return extend({chat_id: chat_id}, {text: text}, paramsJSON)
     }
@@ -203,6 +204,5 @@ module.exports = (config) => {
             goto: goto
         }, extra))
     }
-
     return result
 }
