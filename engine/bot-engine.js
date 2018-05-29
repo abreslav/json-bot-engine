@@ -600,9 +600,8 @@ function ExecutionContext(c, userData, blocks, appContext) {
     function collectInputHandlers(textInstr) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
-            button.user_input = button.title
             return {
-                user_input: button.user_input,
+                user_input: [button.title],
                 goto: button.goto
             }
         }).filter((v) => v)
