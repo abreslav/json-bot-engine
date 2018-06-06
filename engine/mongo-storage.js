@@ -99,26 +99,25 @@ function MongoStorage(db) {
     }
 
     this.saveUserData = (userData, stack, variables, globalInputHandlers, callback) => {
-        db.collection(Collections.USERS).updateOne(
-            {
-                _id: userData.id,
-                messenger: userData.messenger
-            },
-            {
-                $set: {
-                    stack: stack,
-                    variables: unescapeNames(variables),
-                    user_input_handlers: globalInputHandlers
+        try {
+            db.collection(Collections.USERS).updateOne(
+                {
+                    _id: userData.id,
+                    messenger: userData.messenger
+                },
+                {
+                    $set: {
+                        stack: stack,
+                        variables: unescapeNames(variables),
+                        user_input_handlers: globalInputHandlers
+                    }
                 }
-            },
-            undefined,
-            (err, result) => {
-                if (err) throw err
-                if (callback) {
-                    callback()
-                }
-            }
-        )
+            )
+        }
+        catch (e) {
+            console.log(e)
+        }
+
     }
 
     this.logMessageReceived = async (userDomain, userId, message) => {
