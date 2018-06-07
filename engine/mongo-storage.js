@@ -58,7 +58,8 @@ function MongoStorage(db) {
                 _id: id,
                 messenger: messenger,
                 stack: [],
-                variables: {}
+                variables: {},
+                user_input_handlers: [] // ????
             },
             null,
             (err, result) => {
