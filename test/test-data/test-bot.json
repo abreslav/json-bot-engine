@@ -40,7 +40,7 @@
     {
       "text": "Начнем заново?",
       "quick_replies": [
-        {"title": "Да", "goto": "__on_start"}
+        {"title": "Да", "user_input": ["да"], "goto": "__on_start"}
       ]
     }
   ],

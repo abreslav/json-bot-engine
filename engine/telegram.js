@@ -90,6 +90,16 @@ module.exports = (config) => {
             extend(json, load, {chat_id: chat_id})
             await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendMessage", json)
         }
+        this.sendphoto= async function (pic_url, text){
+            let json = {
+                chat_id: chat_id,
+                photo: pic_url,
+                caption: text,
+                reply_markup: [[{text: "Подробнее"}],
+                    [{text: "<"}, {text: "Контакты"}, {text: ">"}]]
+            }
+            await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/sendPhoto", json)
+        }
         this.fetchUserVariables = async () => {
             let json = {}
             extend(json, {chat_id: chat_id}, {user_id: chat_id})
