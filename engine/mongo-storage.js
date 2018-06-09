@@ -71,7 +71,7 @@ function MongoStorage(db) {
     }
 
     this.createIndex = () => {
-        db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true })
+        db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true})
     }
 
     // callback: (userData, newUser)
@@ -81,7 +81,7 @@ function MongoStorage(db) {
         db.collection(Collections.USERS).find(
             {
                 _id: userId,
-                messenger:  messenger
+                messenger: messenger
             }
         ).toArray(
             (err, result) => {
@@ -100,25 +100,19 @@ function MongoStorage(db) {
     }
 
     this.saveUserData = (userData, stack, variables, globalInputHandlers, callback) => {
-        try {
-            db.collection(Collections.USERS).updateOne(
-                {
-                    _id: userData.id,
-                    messenger: userData.messenger
-                },
-                {
-                    $set: {
-                        stack: stack,
-                        variables: unescapeNames(variables),
-                        user_input_handlers: globalInputHandlers
-                    }
+        db.collection(Collections.USERS).updateOne(
+            {
+                _id: userData.id,
+                messenger: userData.messenger
+            },
+            {
+                $set: {
+                    stack: stack,
+                    variables: unescapeNames(variables),
+                    user_input_handlers: globalInputHandlers
                 }
-            )
-        }
-        catch (e) {
-            console.log(e)
-        }
-
+            }
+        )
     }
 
     this.logMessageReceived = async (userDomain, userId, message) => {
