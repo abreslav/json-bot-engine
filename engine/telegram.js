@@ -17,7 +17,9 @@ module.exports = (config) => {
             }
         )
 
-        let webhookResponse = telegramSetWebhook()
+        telegramDeleteWebhook()
+        telegramGetUpdates()
+        telegramSetWebhook()
 
         app.post(path, function (req, res) {
             handleRequest(req, engine)
@@ -182,6 +184,16 @@ module.exports = (config) => {
         let json = {}
         extend(json, {url: config.telegram.webhook_host + config.telegram.webhook_path})
         await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/setWebhook", json)
+    }
+
+    async function telegramDeleteWebhook() {
+        await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/deleteWebhook")
+    }
+
+    async function telegramGetUpdates() {
+        let json = {}
+        // extend(json, {url: config.telegram.webhook_host + config.telegram.webhook_path})
+        await telegramPost("https://api.telegram.org/bot" + config.telegram.bot_token + "/getUpdates")
     }
 
     async function telegramPost(url, json) {
