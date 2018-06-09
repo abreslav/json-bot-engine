@@ -17,9 +17,7 @@ module.exports = (config) => {
             }
         )
 
-        telegramDeleteWebhook()
-            .then(telegramGetUpdates())
-            .then(telegramSetWebhook())
+        telegramSetWebhook()
 
         app.post(path, function (req, res) {
             handleRequest(req, engine)
