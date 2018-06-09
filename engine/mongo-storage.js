@@ -111,6 +111,9 @@ function MongoStorage(db) {
                     variables: unescapeNames(variables),
                     user_input_handlers: globalInputHandlers
                 }
+            }, function(err, res) {
+                if (err) throw err
+                console.log(userData + " updated")
             }
         )
     }
