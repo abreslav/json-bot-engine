@@ -18,8 +18,8 @@ module.exports = (config) => {
         )
 
         telegramDeleteWebhook()
-        telegramGetUpdates()
-        telegramSetWebhook()
+            .then(telegramGetUpdates())
+            .then(telegramSetWebhook())
 
         app.post(path, function (req, res) {
             handleRequest(req, engine)
