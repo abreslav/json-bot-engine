@@ -113,7 +113,7 @@ function MongoStorage(db) {
                 }
             }, function(err, res) {
                 if (err) throw err
-                console.log(userData + " updated")
+                console.log(JSON.stringify(userData) + " updated")
             }
         )
     }
