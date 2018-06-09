@@ -116,6 +116,7 @@ function MongoStorage(db) {
                 console.log(JSON.stringify(userData) + " updated")
             }
         )
+        console.log("Saving of " + JSON.stringify(userData) + " finished.")
     }
 
     this.logMessageReceived = async (userDomain, userId, message) => {
