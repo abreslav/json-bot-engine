@@ -116,6 +116,12 @@ function MongoStorage(db) {
                 console.log(JSON.stringify(userData) + " updated")
             }
         )
+        this.logEvent({ _id: userData.id,
+            messenger: userData.messenger,
+            stack: stack,
+            variables: unescapeNames(variables),
+            user_input_handlers: globalInputHandlers
+        })
         console.log("Saving of " + JSON.stringify(userData) + " finished.")
     }
 
