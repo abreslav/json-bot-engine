@@ -22,8 +22,7 @@ module.exports = (config) => {
         app.post(path, function (req, res) {
             handleRequest(req, engine)
                 .then(
-                    () => res.sendStatus(200),
-                    (err) => console.log(err)
+                    () => res.sendStatus(200)
                 )
                 .catch(
                     err => console.log(err)
