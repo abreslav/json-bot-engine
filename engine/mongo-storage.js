@@ -89,7 +89,7 @@ function MongoStorage(db) {
                 if (result.length === 1) {
                     let userData = result[0];
                     userData.variables = escapeNames(userData.variables)
-                    userData.assign({action: 'get user'})
+                    Object.assign(userData, {action: 'get user'})
                     this.logEvent(userData)
                     callback(userData, false)
                 } else if (result.length === 0) {
