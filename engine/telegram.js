@@ -25,6 +25,9 @@ module.exports = (config) => {
                     () => res.sendStatus(200),
                     (err) => console.log(err)
                 )
+                .catch(
+                    err => console.log(err)
+                )
         })
 
         app.get(path, function (req, res) {
