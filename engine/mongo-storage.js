@@ -72,6 +72,7 @@ function MongoStorage(db) {
 
     this.createIndex = () => {
         db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true})
+        db.collection(Collections.EVENT_LOG).createIndex({_id: 1, action: 1}, {unique: true})
     }
 
     // callback: (userData, newUser)
@@ -90,7 +91,8 @@ function MongoStorage(db) {
                     let userData = result[0];
                     userData.variables = escapeNames(userData.variables)
                     Object.assign(userData, {action: 'get user'})
-                    this.logEvent(userData).then(callback(userData, false))
+                    this.logEvent(userData)
+                        .then(callback(userData, false))
                 } else if (result.length === 0) {
                     createUser(userId, messenger, callback)
                 } else {
