@@ -72,7 +72,7 @@ function MongoStorage(db) {
 
     this.createIndex = () => {
         db.collection(Collections.USERS).createIndex({_id: 1, messenger: 1}, {unique: true})
-        db.collection(Collections.EVENT_LOG).createIndex({_id: 1, action: 1}, {unique: true})
+        db.collection(Collections.EVENT_LOG).createIndex({_id: 1, action: 1}, {unique: false})
     }
 
     // callback: (userData, newUser)
@@ -114,7 +114,9 @@ function MongoStorage(db) {
                     variables: unescapeNames(variables),
                     user_input_handlers: globalInputHandlers
                 }
-            }, function(err, res) {
+            },
+            undefined,
+            (err, res) => {
                 if (err) throw err
                 console.log(JSON.stringify(userData) + " updated")
             }
