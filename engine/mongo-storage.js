@@ -90,7 +90,8 @@ function MongoStorage(db) {
                 if (result.length === 1) {
                     let userData = result[0];
                     userData.variables = escapeNames(userData.variables)
-                    Object.assign(userData, {action: 'get user'})
+                    Object.assign(userData, {action: 'get user', id: userData._id})
+                    delete userData._id
                     this.logEvent(userData)
                         .then(callback(userData, false))
                 } else if (result.length === 0) {
@@ -123,7 +124,7 @@ function MongoStorage(db) {
         )
         this.logEvent({
             action: 'save user',
-            _id: userData.id,
+            id: userData.id,
             messenger: userData.messenger,
             stack: stack,
             variables: unescapeNames(variables),
