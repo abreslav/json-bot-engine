@@ -602,7 +602,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
             return {
-                user_input: [button.title],
+                user_input: [normalize(button.title)],
                 goto: button.goto
             }
         }).filter((v) => v)
