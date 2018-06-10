@@ -89,6 +89,8 @@ function MongoStorage(db) {
                 if (result.length === 1) {
                     let userData = result[0];
                     userData.variables = escapeNames(userData.variables)
+                    userData.assign({action: 'get user'})
+                    this.logEvent(userData)
                     callback(userData, false)
                 } else if (result.length === 0) {
                     createUser(userId, messenger, callback)
@@ -116,7 +118,9 @@ function MongoStorage(db) {
                 console.log(JSON.stringify(userData) + " updated")
             }
         )
-        this.logEvent({ _id: userData.id,
+        this.logEvent({
+            action: 'save user',
+            _id: userData.id,
             messenger: userData.messenger,
             stack: stack,
             variables: unescapeNames(variables),
