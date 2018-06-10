@@ -305,6 +305,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 }
             }
         }
+        return false
     }
 
     async function handleUnrecognizedInput(text) {
