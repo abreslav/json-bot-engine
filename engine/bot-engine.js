@@ -76,9 +76,16 @@ function error(error) {
     throw new Error(error)
 }
 
+// blocks: async (blockId, variables?) | a dictionary of blocks
 let BotEngine = function(blocks, appContext) {
+
+    if (typeof blocks !== 'function') {
+        let _blocks = blocks
+        blocks = async (id) => _blocks[id]
+    }
+
     this.initEngine = async (messengerApi) => {
-        let initBlock = blocks[PredefinedBlocks.INITIALIZE]
+        let initBlock = await blocks(PredefinedBlocks.INITIALIZE, undefined /*variables are not available*/)
         if (initBlock) {
             for (let instr of initBlock) {
                 if (messengerApi.messenger === instr.messenger) {
@@ -169,7 +176,7 @@ let BotEngine = function(blocks, appContext) {
             })
         }
         // TODO: support other features in __initialize
-        let initBlock = blocks[PredefinedBlocks.INITIALIZE]
+        let initBlock = await ec.getBlock(PredefinedBlocks.INITIALIZE)
         if (initBlock) {
             for (let instr of initBlock) {
                 if (instr.messenger) {
@@ -214,6 +221,8 @@ function ExecutionContext(c, userData, blocks, appContext) {
     let referralHandlers = []
 
     this.c = c
+
+    this.getBlock = async (blockId) => await blocks(blockId, Object.assign({}, variables))
 
     this.doGoto = async (blockId, noReturn = false) => {
         goto(blockId, noReturn)
@@ -306,7 +315,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     }
 
     async function handleUnrecognizedInput(text) {
-        if (blocks[PredefinedBlocks.ON_UNRECOGNIZED]) {
+        if (await ec.getBlock(PredefinedBlocks.ON_UNRECOGNIZED)) {
             await ec.doGoto(PredefinedBlocks.ON_UNRECOGNIZED)
             return true
         }
@@ -364,7 +373,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         while (true) {
             let frame = getTopFrame()
             if (!frame) break
-            let block = blocks[frame.block_id]
+            let block = await ec.getBlock(frame.block_id)
             if (!block) {
                 error(`Unresolved block id: ${frame.block_id}`)
             }
@@ -436,7 +445,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         } else if (instr.gallery) {
             await sendMessageAndLog(
                 mb.gallery(
-                    getItems(instr.gallery),
+                    await getItems(instr.gallery),
                     instr.gallery.image_aspect_ratio
                 )
             )
@@ -566,13 +575,13 @@ function ExecutionContext(c, userData, blocks, appContext) {
         return res
     }
 
-    function getItems(galleryItems) {
+    async function getItems(galleryItems) {
         let result = []
 
         for (let item of galleryItems) {
             if (item.refs) {
                 for (let ref of item.refs) {
-                    let resolvedItem = blocks[ref]
+                    let resolvedItem = await ec.getBlock(ref)
                     if (!resolvedItem) {
                         error("Unresolved gallery item: " + JSON.stringify(ref))
                     }
