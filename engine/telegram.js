@@ -20,13 +20,18 @@ module.exports = (config) => {
         telegramSetWebhook()
 
         app.post(path, function (req, res) {
-            handleRequest(req, engine)
-                .then(
-                    () => res.sendStatus(200)
-                )
-                .catch(
-                    err => console.log(err)
-                )
+            try {
+                handleRequest(req, engine)
+                    .then(
+                        () => res.sendStatus(200)
+                    )
+                    .catch(
+                        err => console.log(err)
+                    )
+            } catch (e) {
+
+            }
+
         })
 
         app.get(path, function (req, res) {
