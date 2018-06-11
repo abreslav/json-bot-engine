@@ -29,7 +29,7 @@ module.exports = (config) => {
                         err => console.log(err)
                     )
             } catch (e) {
-
+                console.log(e)
             }
 
         })
