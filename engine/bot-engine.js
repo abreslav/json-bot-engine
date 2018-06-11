@@ -78,7 +78,7 @@ function error(error) {
     throw new Error(error)
 }
 
-let BotEngine = function(blocks, appContext) {
+let BotEngine = function (blocks, appContext) {
     this.initEngine = async (messengerApi) => {
         let initBlock = blocks[PredefinedBlocks.INITIALIZE]
         if (initBlock) {
@@ -150,13 +150,17 @@ let BotEngine = function(blocks, appContext) {
         return await ec.handleReferral(referralTag)
     }
 
-    async function logMessageReceived(c, message) {
-        await appContext.storage.logMessageReceived(c.messengerApi.messenger, c.userId, message)
+    this.getEc = async (c) => {
+        return await fetchUserContext(c);
+    }
+
+    function logMessageReceived(c, message) {
+        appContext.storage.logMessageReceived(c.messengerApi.messenger, c.userId, message)
     }
 
     async function fetchUserContext(c) {
         return await new Promise((resolve) => {
-            appContext.storage.getUserDataById(c, (userData, newUser) => {
+            appContext.storage.getUserDataById(c, (userData) => {
                 let ec = new ExecutionContext(c, userData, blocks, appContext)
                 initUserContext(ec).then(() => resolve(ec))
             })
@@ -216,7 +220,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     let referralHandlers = []
 
     this.c = c
-
+    this.stack = stack
     this.doGoto = async (blockId, noReturn = false) => {
         goto(blockId, noReturn)
         await run()
@@ -269,6 +273,15 @@ function ExecutionContext(c, userData, blocks, appContext) {
         this.assignVariable(PredefinedVariables.last_operator_message, text)
 
         await dispatchInput(normalize(text), operatorInputHandlers)
+    }
+
+    this.substituteObject = async (obj) => substituteObject(obj)
+
+    this.getTopStackFrame = () => getTopFrame()
+
+    this.putOnStackAndSave = async (load) => {
+        updateTopFrameState(load)
+        await saveToDB()
     }
 
     let ec = this
@@ -403,7 +416,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         instr = substituteObject(instr)
         if (typeof instr.text !== 'undefined') {
             if (instr.buttons) {
-                await sendMessageAndLog(mb.textWithButtons(instr.text, instr.buttons));
+                await sendMessageAndLog(mb.textWithButtons(instr.text, instr.buttons))
                 updateTopFrameState({
                     state: BotStates.WAIT_FOR_REPLY,
                     expected_gotos: collectGotos(instr),
@@ -439,12 +452,19 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 (resolve) => setTimeout(resolve, BotEngine.debugDelay ? 1 : instr.typing)
             )
         } else if (instr.gallery) {
+            const gallery = getItems(instr.gallery)
             await sendMessageAndLog(
                 mb.gallery(
-                    getItems(instr.gallery),
-                    instr.gallery.image_aspect_ratio
+                    gallery,
+                    instr.gallery.image_aspect_ratio,
+                    ec
                 )
             )
+            updateTopFrameState({
+                state: BotStates.WAIT_FOR_REPLY,
+                gallery: gallery
+            })
+            return InstructionResults.WAIT
         } else if (instr.schedule) {
             await appContext.scheduler.schedule(
                 ec.c.messengerApi.messenger,
@@ -602,9 +622,12 @@ function ExecutionContext(c, userData, blocks, appContext) {
     function collectInputHandlers(textInstr) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
-            return {
-                user_input: [normalize(button.title)],
-                goto: button.goto
+            button.user_input = [normalize(button.title)]
+            if (button.user_input && button.goto) {
+                return {
+                    user_input: [normalize(button.title)],
+                    goto: button.goto
+                }
             }
         }).filter((v) => v)
     }
