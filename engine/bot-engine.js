@@ -26,6 +26,7 @@ const PredefinedVariables = {
     url_ref_tag: "${url_ref_tag}",
     timezone: "${timezone}",
     timestamp: "${timestamp}",
+    username: "${username}"
 }
 
 const BotStates = {
@@ -155,13 +156,17 @@ let BotEngine = function(blocks, appContext) {
         return await ec.handleReferral(referralTag)
     }
 
-    async function logMessageReceived(c, message) {
-        await appContext.storage.logMessageReceived(c.messengerApi.messenger, c.userId, message)
+    this.getEc = async (c) => {
+        return await fetchUserContext(c);
+    }
+
+    function logMessageReceived(c, message) {
+        appContext.storage.logMessageReceived(c.messengerApi.messenger, c.userId, message)
     }
 
     async function fetchUserContext(c) {
         return await new Promise((resolve) => {
-            appContext.storage.getUserDataById(c.userId, (userData, newUser) => {
+            appContext.storage.getUserDataById(c, (userData) => {
                 let ec = new ExecutionContext(c, userData, blocks, appContext)
                 initUserContext(ec).then(() => resolve(ec))
             })
@@ -223,7 +228,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     this.c = c
 
     this.getBlock = async (blockId) => await blocks(blockId, Object.assign({}, variables))
-
+    this.stack = stack
     this.doGoto = async (blockId, noReturn = false) => {
         goto(blockId, noReturn)
         await run()
@@ -278,6 +283,15 @@ function ExecutionContext(c, userData, blocks, appContext) {
         await dispatchInput(normalize(text), operatorInputHandlers)
     }
 
+    this.substituteObject = async (obj) => substituteObject(obj)
+
+    this.getTopStackFrame = () => getTopFrame()
+
+    this.putOnStackAndSave = async (load) => {
+        updateTopFrameState(load)
+        await saveToDB()
+    }
+
     let ec = this
 
     function fetchTopFrameInputData() {
@@ -322,7 +336,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
     }
 
     async function saveToDB() {
-        await toPromise((c) => appContext.storage.saveUserData(userData._id, stack, variables, globalInputHandlers, c))
+        await toPromise((c) => appContext.storage.saveUserData(userData, stack, variables, globalInputHandlers, c))
     }
 
     function initFrame(blockId) {
@@ -408,7 +422,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
         ec.assignVariable(PredefinedVariables.current_block, getTopFrame().block_id)
         if (typeof instr.text !== 'undefined') {
             if (instr.buttons) {
-                await sendMessageAndLog(mb.textWithButtons(instr.text, instr.buttons));
+                await sendMessageAndLog(mb.textWithButtons(instr.text, instr.buttons))
                 updateTopFrameState({
                     state: BotStates.WAIT_FOR_REPLY,
                     expected_gotos: collectGotos(instr),
@@ -443,14 +457,25 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 (resolve) => setTimeout(resolve, BotEngine.debugDelay ? 1 : instr.typing)
             )
         } else if (instr.gallery) {
+            const gallery = getItems(instr.gallery)
             await sendMessageAndLog(
                 mb.gallery(
-                    await getItems(instr.gallery),
-                    instr.gallery.image_aspect_ratio
-                )
+                    getItems(instr.gallery),
+                    instr.gallery.image_aspect_ratio,
+                    gallery,
+                    instr.gallery.image_aspect_ratio,
+                    ec
             )
+        )
+            updateTopFrameState({
+                state: BotStates.WAIT_FOR_REPLY,
+                gallery: gallery
+            })
+            return InstructionResults.WAIT
         } else if (instr.schedule) {
-            await ec.c.scheduler.schedule(
+            await appContext.scheduler.schedule(
+                ec.c.messengerApi.messenger,
+                ec.c.userId,
                 instr.schedule,
                 instr.trigger || "no_trigger",
                 { goto: instr.goto }
@@ -492,7 +517,7 @@ function ExecutionContext(c, userData, blocks, appContext) {
                 }
             }
             if (_else) {
-                goto(_else.goto)
+                goto(_else["else"][0].goto)
             }
         } else if (instr.event) {
             let event = {
@@ -543,7 +568,6 @@ function ExecutionContext(c, userData, blocks, appContext) {
     }
     this.testOnly = {}
     this.testOnly.substituteText = substituteText
-
     function substituteObject(obj) {
         let res = deepcopy(obj)
         let substitutableFields = new Set([
@@ -604,9 +628,10 @@ function ExecutionContext(c, userData, blocks, appContext) {
     function collectInputHandlers(textInstr) {
         let buttons = textInstr.buttons || textInstr.quick_replies || []
         return buttons.map((button) => {
+            button.user_input = [normalize(button.title)]
             if (button.user_input && button.goto) {
                 return {
-                    user_input: button.user_input,
+                    user_input: [normalize(button.title)],
                     goto: button.goto
                 }
             }
